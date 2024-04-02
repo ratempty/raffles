@@ -36,5 +36,5 @@ export class Raffle {
   raffleEndDate: Date;
 
   @OneToMany(() => UserRaffle, (userRaffle) => userRaffle.raffle)
-  userRaffle: UserRaffle;
+  userRaffle: UserRaffle[];
 }
