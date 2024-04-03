@@ -35,21 +35,20 @@ export class MarketsService {
 
   async fetchSneakers(saveShoesDto: SaveShoesDto) {
     const { brand } = saveShoesDto;
-    //for (let i = 1; i <= 15; i++) {
-    //const page = i.toString();
-    const page = '1';
-    const sneakersData = await this.SneakersApiCall(page, brand);
-    const sneakersDataSave = sneakersData.results.map((sneakerData) => {
-      const { brand, styleId, title, media } = sneakerData;
-      if (media.imageUrl === null || styleId === '') {
-        return null;
-      } else {
-        return { brand, shoeCode: styleId, name: title, imgUrl: media };
-      }
-    });
-    await this.saveSneakers(sneakersDataSave);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    //}
+    for (let i = 1; i <= 15; i++) {
+      const page = i.toString();
+      const sneakersData = await this.SneakersApiCall(page, brand);
+      const sneakersDataSave = sneakersData.results.map((sneakerData) => {
+        const { brand, styleId, title, media } = sneakerData;
+        if (media.imageUrl === null || styleId === '') {
+          return null;
+        } else {
+          return { brand, shoeCode: styleId, name: title, imgUrl: media };
+        }
+      });
+      await this.saveSneakers(sneakersDataSave);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
   }
 
   async saveSneakers(sneakersDataSave: any[]) {
