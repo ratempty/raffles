@@ -52,6 +52,11 @@ export class MarketsController {
       .send({ message: '판매글이 작성되었습니다.' });
   }
 
+  @Get(':shoesId')
+  async findAllPost(@Param('shoesId') shoesId: string) {
+    await this.marketsService.findAllPost(+shoesId);
+  }
+
   //@UseGuards(AuthGuard('jwt'))
   @Patch(':marketId')
   async updatePost(

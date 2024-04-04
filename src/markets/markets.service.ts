@@ -64,6 +64,12 @@ export class MarketsService {
     });
   }
 
+  async findAllPost(shoesId: number) {
+    await this.marketsRepository.find({
+      where: { shoesId },
+    });
+  }
+
   async updatePost(marketId: number, updateMarketDto: UpdateMarketDto) {
     const updateData = updateMarketDto;
     await this.marketsRepository.update(
