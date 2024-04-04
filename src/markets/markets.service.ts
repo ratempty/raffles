@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import { Shoes } from './entities/shoes.entity';
@@ -7,6 +11,7 @@ import { SaveShoesDto } from './dto/save-shoes.dto';
 import { CreateMarketDto } from './dto/create-market.dto';
 import { Market } from './entities/market.entity';
 import { UpdateMarketDto } from './dto/update-market.dto';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class MarketsService {
@@ -15,6 +20,8 @@ export class MarketsService {
     private shoesRepository: Repository<Shoes>,
     @InjectRepository(Market)
     private marketsRepository: Repository<Market>,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {}
   async getAllShoes(page: string) {
     const skipShoeId = (+page - 1) * 50;
@@ -38,20 +45,16 @@ export class MarketsService {
     return shoes;
   }
 
-  async createPost(
+  async createMarket(
+    userId: number,
     shoeId: number,
-    {
-      title,
-      content,
-      size,
-      imgUrl,
-      salesStatus,
-      price,
-      useStatus,
-    }: CreateMarketDto,
+    createMarketDto: CreateMarketDto,
   ) {
+    const { title, content, size, imgUrl, salesStatus, price, useStatus } =
+      createMarketDto;
     const view = 0;
-    const post = await this.marketsRepository.save({
+    await this.marketsRepository.save({
+      userId,
       shoeId,
       title,
       content,
@@ -64,7 +67,7 @@ export class MarketsService {
     });
   }
 
-  async findAllPost(shoesId: number) {
+  async findAllMarket(shoesId: number) {
     const shoesInfo = await this.shoesRepository.findOne({
       where: { id: shoesId },
       select: ['brand', 'name', 'shoeCode', 'imgUrl'],
@@ -75,13 +78,27 @@ export class MarketsService {
     return { shoesInfo, posts };
   }
 
-  async findOnePost(marketId: number) {
-    await this.marketsRepository.findOne({
+  async findOneMarket(marketId: number) {
+    const market = await this.marketsRepository.findOne({
       where: { id: marketId },
     });
+    if (!market) {
+      throw new NotFoundException({ message: '판매글이 존재하지 않습니다.' });
+    }
+    return market;
   }
 
-  async updatePost(marketId: number, updateMarketDto: UpdateMarketDto) {
+  async updateMarket(
+    userId: number,
+    marketId: number,
+    updateMarketDto: UpdateMarketDto,
+  ) {
+    const market = await this.findOneMarket(marketId);
+    if (market.userId !== userId) {
+      throw new UnauthorizedException({
+        message: '판매글을 수정할 권한이 없습니다.',
+      });
+    }
     const updateData = updateMarketDto;
     await this.marketsRepository.update(
       {
@@ -91,7 +108,13 @@ export class MarketsService {
     );
   }
 
-  async deleteMarket(marketId: number) {
+  async deleteMarket(userId: number, marketId: number) {
+    const market = await this.findOneMarket(marketId);
+    if (market.userId !== userId) {
+      throw new UnauthorizedException({
+        message: '판매글을 삭제할 권한이 없습니다.',
+      });
+    }
     await this.marketsRepository.delete({ id: marketId });
   }
 

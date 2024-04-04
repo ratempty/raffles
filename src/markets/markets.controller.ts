@@ -37,55 +37,55 @@ export class MarketsController {
     return await this.marketsService.getAllShoes(page);
   }
 
-  //@UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'))
   @Post(':shoeId')
-  async createPost(
+  async createMarket(
     @Body() createMarketDto: CreateMarketDto,
     @Request() req,
     @Param('shoeId') shoeId: string,
     @Res() res,
   ) {
-    //const userId = req.user.id;
-    await this.marketsService.createPost(+shoeId, createMarketDto);
+    const userId = req.user.id;
+    await this.marketsService.createMarket(userId, +shoeId, createMarketDto);
     res
       .status(HttpStatus.CREATED)
       .send({ message: '판매글이 작성되었습니다.' });
   }
 
   @Get(':shoesId')
-  async findAllPost(@Param('shoesId') shoesId: string) {
-    return await this.marketsService.findAllPost(+shoesId);
+  async findAllMarket(@Param('shoesId') shoesId: string) {
+    return await this.marketsService.findAllMarket(+shoesId);
   }
 
   @Get(':marketId')
-  async findOnePost(@Param('marketId') marketId: string) {
-    await this.marketsService.findOnePost(+marketId);
+  async findOneMarket(@Param('marketId') marketId: string) {
+    return await this.marketsService.findOneMarket(+marketId);
   }
 
-  //@UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'))
   @Patch(':marketId')
-  async updatePost(
+  async updateMarket(
     @Body() updateMarketDto: UpdateMarketDto,
     @Request() req,
     @Param('marketId') marketId: string,
     @Res() res,
   ) {
-    //const userId = req.user.id;
-    await this.marketsService.updatePost(+marketId, updateMarketDto);
+    const userId = req.user.id;
+    await this.marketsService.updateMarket(userId, +marketId, updateMarketDto);
     res
       .status(HttpStatus.ACCEPTED)
       .send({ message: '판매글이 수정되었습니다.' });
   }
 
-  //@UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'))
   @Delete('marketId')
   async deleteMarket(
     @Request() req,
     @Param('marketId') marketId: string,
     @Res() res,
   ) {
-    //const userId = req.user.id;
-    await this.marketsService.deleteMarket(+marketId);
+    const userId = req.user.id;
+    await this.marketsService.deleteMarket(userId, +marketId);
     res
       .status(HttpStatus.ACCEPTED)
       .send({ message: '판매글이 삭제되었습니다.' });
