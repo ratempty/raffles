@@ -4,12 +4,16 @@ import axios from 'axios';
 import { Shoes } from './entities/shoes.entity';
 import { Repository } from 'typeorm';
 import { SaveShoesDto } from './dto/save-shoes.dto';
+import { CreateMarketDto } from './dto/create-market.dto';
+import { Market } from './entities/market.entity';
 
 @Injectable()
 export class MarketsService {
   constructor(
     @InjectRepository(Shoes)
     private shoesRepository: Repository<Shoes>,
+    @InjectRepository(Market)
+    private marketsRepository: Repository<Market>,
   ) {}
   async getAllShoes(page: string) {
     const skipShoeId = (+page - 1) * 50;
@@ -31,6 +35,32 @@ export class MarketsService {
     // }));
     // console.log(shoeImgOnlyThumnail);
     return shoes;
+  }
+
+  async createPost(
+    shoeId: number,
+    {
+      title,
+      content,
+      size,
+      imgUrl,
+      salesStatus,
+      price,
+      useStatus,
+    }: CreateMarketDto,
+  ) {
+    const view = 0;
+    const post = await this.marketsRepository.save({
+      shoeId,
+      title,
+      content,
+      size,
+      view,
+      imgUrl,
+      salesStatus,
+      price,
+      useStatus,
+    });
   }
   async SneakersApiCall(page: string, brand: string) {
     try {

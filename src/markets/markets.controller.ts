@@ -6,13 +6,17 @@ import {
   Patch,
   Param,
   Delete,
-  Request,
   Res,
   HttpStatus,
   Query,
+  UseGuards,
+  Req,
+  Request,
 } from '@nestjs/common';
 import { MarketsService } from './markets.service';
 import { SaveShoesDto } from './dto/save-shoes.dto';
+import { CreateMarketDto } from './dto/create-market.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('markets')
 export class MarketsController {
@@ -30,5 +34,20 @@ export class MarketsController {
   @Get()
   async getAllShoes(@Query('page') page: string) {
     return await this.marketsService.getAllShoes(page);
+  }
+
+  //@UseGuards(AuthGuard('jwt'))
+  @Post(':shoeId')
+  async createPost(
+    @Body() createMarketDto: CreateMarketDto,
+    @Request() req,
+    @Param('shoeId') shoeId: string,
+    @Res() res,
+  ) {
+    //const userId = req.user.id;
+    await this.marketsService.createPost(+shoeId, createMarketDto);
+    res
+      .status(HttpStatus.CREATED)
+      .send({ message: '판매글이 작성되었습니다.' });
   }
 }
