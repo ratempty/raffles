@@ -17,6 +17,7 @@ import { MarketsService } from './markets.service';
 import { SaveShoesDto } from './dto/save-shoes.dto';
 import { CreateMarketDto } from './dto/create-market.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { UpdateMarketDto } from './dto/update-market.dto';
 
 @Controller('markets')
 export class MarketsController {
@@ -49,5 +50,20 @@ export class MarketsController {
     res
       .status(HttpStatus.CREATED)
       .send({ message: '판매글이 작성되었습니다.' });
+  }
+
+  //@UseGuards(AuthGuard('jwt'))
+  @Patch(':marketId')
+  async updatePost(
+    @Body() updateMarketDto: UpdateMarketDto,
+    @Request() req,
+    @Param('marketId') marketId: string,
+    @Res() res,
+  ) {
+    //const userId = req.user.id;
+    await this.marketsService.updatePost(+marketId, updateMarketDto);
+    res
+      .status(HttpStatus.ACCEPTED)
+      .send({ message: '판매글이 수정되었습니다.' });
   }
 }

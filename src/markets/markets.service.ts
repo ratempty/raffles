@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { SaveShoesDto } from './dto/save-shoes.dto';
 import { CreateMarketDto } from './dto/create-market.dto';
 import { Market } from './entities/market.entity';
+import { UpdateMarketDto } from './dto/update-market.dto';
 
 @Injectable()
 export class MarketsService {
@@ -61,6 +62,16 @@ export class MarketsService {
       price,
       useStatus,
     });
+  }
+
+  async updatePost(marketId: number, updateMarketDto: UpdateMarketDto) {
+    const updateData = updateMarketDto;
+    await this.marketsRepository.update(
+      {
+        id: marketId,
+      },
+      updateData,
+    );
   }
   async SneakersApiCall(page: string, brand: string) {
     try {
