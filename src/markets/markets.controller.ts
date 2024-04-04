@@ -76,4 +76,18 @@ export class MarketsController {
       .status(HttpStatus.ACCEPTED)
       .send({ message: '판매글이 수정되었습니다.' });
   }
+
+  //@UseGuards(AuthGuard('jwt'))
+  @Delete('marketId')
+  async deleteMarket(
+    @Request() req,
+    @Param('marketId') marketId: string,
+    @Res() res,
+  ) {
+    //const userId = req.user.id;
+    await this.marketsService.deleteMarket(+marketId);
+    res
+      .status(HttpStatus.ACCEPTED)
+      .send({ message: '판매글이 삭제되었습니다.' });
+  }
 }

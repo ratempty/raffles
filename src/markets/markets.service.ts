@@ -85,6 +85,11 @@ export class MarketsService {
       updateData,
     );
   }
+
+  async deleteMarket(marketId: number) {
+    await this.marketsRepository.delete({ id: marketId });
+  }
+
   async SneakersApiCall(page: string, brand: string) {
     try {
       const response = await axios.get(
