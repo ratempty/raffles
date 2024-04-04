@@ -57,6 +57,11 @@ export class MarketsController {
     await this.marketsService.findAllPost(+shoesId);
   }
 
+  @Get(':marketId')
+  async findOnePost(@Param('marketId') marketId: string) {
+    await this.marketsService.findOnePost(+marketId);
+  }
+
   //@UseGuards(AuthGuard('jwt'))
   @Patch(':marketId')
   async updatePost(

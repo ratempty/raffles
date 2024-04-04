@@ -70,6 +70,12 @@ export class MarketsService {
     });
   }
 
+  async findOnePost(marketId: number) {
+    await this.marketsRepository.findOne({
+      where: { id: marketId },
+    });
+  }
+
   async updatePost(marketId: number, updateMarketDto: UpdateMarketDto) {
     const updateData = updateMarketDto;
     await this.marketsRepository.update(
