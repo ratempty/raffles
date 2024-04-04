@@ -11,6 +11,27 @@ export class MarketsService {
     @InjectRepository(Shoes)
     private shoesRepository: Repository<Shoes>,
   ) {}
+  async getAllShoes(page: string) {
+    const skipShoeId = (+page - 1) * 50;
+    const shoes = await this.shoesRepository.find({
+      select: {
+        id: true,
+        name: true,
+        brand: true,
+        imgUrl: true,
+      },
+      skip: skipShoeId,
+      take: 50,
+    });
+
+    // const shoeImgOnlyThumnail = shoes.map((shoe) => ({
+    //   id: shoe.id,
+    //   name: shoe.name,
+    //   imgUrl: shoe.imgUrl,
+    // }));
+    // console.log(shoeImgOnlyThumnail);
+    return shoes;
+  }
   async SneakersApiCall(page: string, brand: string) {
     try {
       const response = await axios.get(
