@@ -65,9 +65,14 @@ export class MarketsService {
   }
 
   async findAllPost(shoesId: number) {
-    await this.marketsRepository.find({
+    const shoesInfo = await this.shoesRepository.findOne({
+      where: { id: shoesId },
+      select: ['brand', 'name', 'shoeCode', 'imgUrl'],
+    });
+    const posts = await this.marketsRepository.find({
       where: { shoesId },
     });
+    return { shoesInfo, posts };
   }
 
   async findOnePost(marketId: number) {

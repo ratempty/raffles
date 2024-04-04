@@ -54,7 +54,7 @@ export class MarketsController {
 
   @Get(':shoesId')
   async findAllPost(@Param('shoesId') shoesId: string) {
-    await this.marketsService.findAllPost(+shoesId);
+    return await this.marketsService.findAllPost(+shoesId);
   }
 
   @Get(':marketId')
