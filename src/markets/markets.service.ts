@@ -11,7 +11,6 @@ import { SaveShoesDto } from './dto/save-shoes.dto';
 import { CreateMarketDto } from './dto/create-market.dto';
 import { Market } from './entities/market.entity';
 import { UpdateMarketDto } from './dto/update-market.dto';
-import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class MarketsService {
@@ -20,8 +19,6 @@ export class MarketsService {
     private shoesRepository: Repository<Shoes>,
     @InjectRepository(Market)
     private marketsRepository: Repository<Market>,
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
   ) {}
   async getAllShoes(page: string) {
     const skipShoeId = (+page - 1) * 50;
