@@ -38,6 +38,9 @@ export class MarketsService {
     for (let i = 1; i <= 15; i++) {
       const page = i.toString();
       const sneakersData = await this.SneakersApiCall(page, brand);
+      if (sneakersData.results.length === 0) {
+        break;
+      }
       const sneakersDataSave = sneakersData.results.map((sneakerData) => {
         const { brand, styleId, title, media } = sneakerData;
         if (media.imageUrl === null || styleId === '') {

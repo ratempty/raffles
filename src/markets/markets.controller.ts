@@ -17,6 +17,7 @@ import { SaveShoesDto } from './dto/save-shoes.dto';
 export class MarketsController {
   constructor(private readonly marketsService: MarketsService) {}
 
+  //신발 데이터 요청
   @Post('shoes/save')
   async shoeList(@Body() saveShoesDto: SaveShoesDto, @Res() res) {
     await this.marketsService.fetchSneakers(saveShoesDto);
