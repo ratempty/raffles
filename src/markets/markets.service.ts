@@ -11,6 +11,7 @@ import { SaveShoesDto } from './dto/save-shoes.dto';
 import { CreateMarketDto } from './dto/create-market.dto';
 import { Market } from './entities/market.entity';
 import { UpdateMarketDto } from './dto/update-market.dto';
+import { SaleStatus } from './types/salesStatus.type';
 
 @Injectable()
 export class MarketsService {
@@ -78,6 +79,10 @@ export class MarketsService {
     console.log(shoesInfo);
     const posts = await this.marketsRepository.find({
       where: { shoesId },
+      order: {
+        saleStatus: 'ASC',
+        view: 'DESC',
+      },
     });
     return { shoesInfo, posts };
   }
