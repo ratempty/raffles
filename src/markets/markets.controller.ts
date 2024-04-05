@@ -17,6 +17,7 @@ import { MarketsService } from './markets.service';
 import { CreateMarketDto } from './dto/create-market.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { UpdateMarketDto } from './dto/update-market.dto';
+import { JwtGuard } from 'src/auth/guard';
 
 @Controller('markets')
 export class MarketsController {
@@ -36,7 +37,7 @@ export class MarketsController {
     return await this.marketsService.getAllShoes(page);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtGuard)
   @Post(':shoeId')
   async createMarket(
     @Body() createMarketDto: CreateMarketDto,
@@ -56,13 +57,13 @@ export class MarketsController {
     return await this.marketsService.findAllMarket(+shoesId);
   }
 
-  @Get(':marketId')
+  @Get('/shoes/:marketId')
   async findOneMarket(@Param('marketId') marketId: string) {
     return await this.marketsService.findOneMarket(+marketId);
   }
 
-  @UseGuards(AuthGuard('jwt'))
-  @Patch(':marketId')
+  @UseGuards(JwtGuard)
+  @Patch('/shoes/:marketId')
   async updateMarket(
     @Body() updateMarketDto: UpdateMarketDto,
     @Request() req,
@@ -76,8 +77,8 @@ export class MarketsController {
       .send({ message: '판매글이 수정되었습니다.' });
   }
 
-  @UseGuards(AuthGuard('jwt'))
-  @Delete('marketId')
+  @UseGuards(JwtGuard)
+  @Delete('/shoes/:marketId')
   async deleteMarket(
     @Request() req,
     @Param('marketId') marketId: string,
