@@ -32,14 +32,13 @@ export class MarketsService {
       skip: skipShoeId,
       take: 50,
     });
-
-    // const shoeImgOnlyThumnail = shoes.map((shoe) => ({
-    //   id: shoe.id,
-    //   name: shoe.name,
-    //   imgUrl: shoe.imgUrl,
-    // }));
-    // console.log(shoeImgOnlyThumnail);
-    return shoes;
+    const shoeImgOnlyThumbnail = shoes.map((shoe) => ({
+      id: shoe.id,
+      name: shoe.name,
+      brand: shoe.brand,
+      thumbUrl: shoe.imgUrl['thumbUrl'],
+    }));
+    return shoeImgOnlyThumbnail;
   }
 
   async createMarket(
@@ -65,10 +64,18 @@ export class MarketsService {
   }
 
   async findAllMarket(shoesId: number) {
-    const shoesInfo = await this.shoesRepository.findOne({
+    const shoes = await this.shoesRepository.findOne({
       where: { id: shoesId },
-      select: ['brand', 'name', 'shoeCode', 'imgUrl'],
+      select: ['name', 'brand', 'shoeCode', 'imgUrl'],
     });
+
+    const shoesInfo = {
+      name: shoes.name,
+      brand: shoes.brand,
+      shooCode: shoes.shoeCode,
+      imageUrl: shoes.imgUrl['imageUrl'],
+    };
+    console.log(shoesInfo);
     const posts = await this.marketsRepository.find({
       where: { shoesId },
     });
