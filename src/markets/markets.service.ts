@@ -12,7 +12,6 @@ import { SaveShoesDto } from './dto/save-shoes.dto';
 import { CreateMarketDto } from './dto/create-market.dto';
 import { Market } from './entities/market.entity';
 import { UpdateMarketDto } from './dto/update-market.dto';
-import { SaleStatus } from './types/salesStatus.type';
 
 @Injectable()
 export class MarketsService {

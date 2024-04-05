@@ -14,7 +14,6 @@ import {
   Request,
 } from '@nestjs/common';
 import { MarketsService } from './markets.service';
-import { SaveShoesDto } from './dto/save-shoes.dto';
 import { CreateMarketDto } from './dto/create-market.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { UpdateMarketDto } from './dto/update-market.dto';
