@@ -89,7 +89,14 @@ export class MarketsService {
     if (!market) {
       throw new NotFoundException({ message: '판매글이 존재하지 않습니다.' });
     }
-    return market;
+    await this.marketsRepository.update(
+      { id: market.id },
+      { view: market.view + 1 },
+    );
+    const updateMarket = await this.marketsRepository.findOne({
+      where: { id: marketId },
+    });
+    return updateMarket;
   }
 
   async updateMarket(
