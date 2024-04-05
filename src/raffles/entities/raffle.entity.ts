@@ -29,10 +29,10 @@ export class Raffle {
   @Column({ type: 'varchar' })
   imgUrl: string;
 
-  @Column({ type: 'bigint', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   raffleStartDate: number;
 
-  @Column({ type: 'bigint', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   raffleEndDate: number;
 
   @OneToMany(() => UserRaffle, (userRaffle) => userRaffle.raffle)

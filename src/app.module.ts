@@ -16,6 +16,7 @@ import { Raffle } from './raffles/entities/raffle.entity';
 import { UserRaffle } from './raffles/entities/userRaffle.entity';
 import { Calendar } from './calendars/entities/calendar.entity';
 import { Shoes } from './markets/entities/shoes.entity';
+import { ScheduleModule } from '@nestjs/schedule';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -54,6 +55,7 @@ const typeOrmModuleOptions = {
     CalendarsModule,
     NewsModule,
     RafflesModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],
