@@ -1,6 +1,7 @@
 import { compare, hash } from 'bcrypt';
 import _ from 'lodash';
 import { Repository } from 'typeorm';
+import { HttpService } from '@nestjs/axios';
 
 import {
   BadRequestException,
@@ -14,22 +15,21 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserRaffle } from 'src/raffles/entities/userRaffle.entity';
 import { firstValueFrom } from 'rxjs';
-import { HttpService } from '@nestjs/axios';
+// import { UserRaffle } from 'src/raffles/entities/userRaffle.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    // @InjectRepository(UserRaffle) // UserRaffle 엔티티 Repository 주입
+    // @InjectRepository(UserRaffle)
     // private userRaffleRepository: Repository<UserRaffle>,
     private readonly jwtService: JwtService,
     private http: HttpService,
   ) {}
 
-  // 회원가입
+  // 회원가입 메소드
   async register(
     email: string,
     password: string,
@@ -64,8 +64,10 @@ export class UserService {
       name,
     });
   }
-  // 로그인
+
+  // 로그인 메소드
   async login(email: string, password: string) {
+    // 이메일로 사용자를 찾음
     const user = await this.userRepository.findOne({
       select: ['id', 'email', 'password'],
       where: { email },
@@ -74,10 +76,12 @@ export class UserService {
       throw new UnauthorizedException('이메일을 확인해주세요.');
     }
 
+    // 비밀번호 확인
     if (!(await compare(password, user.password))) {
       throw new UnauthorizedException('비밀번호를 확인해주세요.');
     }
 
+    // Access Token 및 Refresh Token 생성
     const accessTokenPayload = { email, sub: user.id, token_type: 'access' };
     const refreshTokenPayload = { email, sub: user.id, token_type: 'refresh' };
 
@@ -95,11 +99,12 @@ export class UserService {
     };
   }
 
-  // 회원체크
+  // 이메일로 사용자 찾기 메소드
   async findByEmail(email: string) {
     return await this.userRepository.findOneBy({ email });
   }
 
+  // ID로 사용자 찾기 메소드
   async findOne(id: number) {
     const users = await this.userRepository.findOneBy({ id });
     if (_.isNil(users)) {
@@ -108,18 +113,19 @@ export class UserService {
     return users;
   }
 
-  // 전체회원조회
+  // 전체 회원 조회 메소드
   async findAll(): Promise<User[]> {
     return this.userRepository.find();
   }
 
-  // 회원정보 수정
+  // 회원 정보 수정 메소드
   async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.userRepository.findOneBy({ id });
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
+    // 사용자 정보 업데이트
     await this.userRepository.update(
       { id },
       {
@@ -132,17 +138,17 @@ export class UserService {
     return await this.userRepository.findOneBy({ id });
   }
 
-  // 로그아웃
+  // 로그아웃 메소드
   async logout(token: string) {
     // 토큰의 만료 시간을 조정하여 로그아웃을 구현
     // 토큰의 만료 시간을 현재 시간으로 설정하여 무효화
     const expiredToken = this.jwtService.sign({}, { expiresIn: 0 });
     // 클라이언트에게 새로운 만료된 토큰을 전달하여 로그아웃을 유도
-    // 클라이언트는 이 새로운 토큰을 사용하여 인증 요청을 할 경우 로그아웃 처리된다.
+    // 클라이언트는 이 새로운 토큰을 사용하여 인증 요청을 할 경우 로그아웃
     return { access_token: expiredToken };
   }
 
-  // 회원정보 탈퇴
+  // 회원 삭제 메소드
   async deleteUser(id: number) {
     const user = await this.userRepository.findOneBy({ id });
     if (!user) {
@@ -151,11 +157,12 @@ export class UserService {
     await this.userRepository.delete({ id });
   }
 
+  // 카카오 로그인 메소드
   async kakaoLogin(
     KAKAO_REST_API_KEY: string,
     KAKAO_REDIRECT_URI: string,
     code: string,
-  ) {
+  ): Promise<{ message: string; access_token: string; user_id: number }> {
     const config = {
       grant_type: 'authorization_code',
       client_id: KAKAO_REST_API_KEY,
@@ -168,14 +175,16 @@ export class UserService {
       'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
     };
     const tokenUrl = `https://kauth.kakao.com/oauth/token?${params}`;
+
+    // 카카오로부터 access token 요청
     const tokenRes = await firstValueFrom(
       this.http.post(tokenUrl, '', { headers: tokenHeaders }),
     );
 
-    console.log('Token Response:', tokenRes.data);
-
+    // AccessToken 받기
     const accessToken = tokenRes.data.access_token;
 
+    // 카카오로부터 사용자 정보 요청
     const userInfoUrl = `https://kapi.kakao.com/v2/user/me`;
     const userInfoHeaders = {
       Authorization: `Bearer ${accessToken}`,
@@ -184,27 +193,43 @@ export class UserService {
     const userInfoRes = await firstValueFrom(
       this.http.get(userInfoUrl, { headers: userInfoHeaders }),
     );
-
     console.log('User Info:', userInfoRes.data);
-
     const data = userInfoRes.data;
 
-    // 사용자 정보를 로컬 DB에 저장
+    // 카카오 사용자 정보를 로컬 DB에 저장
     let user = await this.userRepository.findOne({
       where: { kakaoId: data.id },
     });
     if (!user) {
+      // 카카오 사용자가 사이트에 가입되어 있지 않은 경우, 자동으로 가입시킴
       user = new User();
       user.kakaoId = data.id;
-      // user.email = data.kakao_account.email; -카카오디벨롭 동의항목에 추가가 안되어있음.
-      user.nickName = data.properties.nickname;
-      // 기타 필요한 정보 추가 가능
+      user.email = data.kakao_account.email; // 카카오에서 제공하는 이메일 정보 활용
+      user.name = data.kakao_account.profile.name; // 카카오에서 제공하는 이름 정보 활용
+
       await this.userRepository.save(user);
     }
 
-    return user;
+    // 여기서는 간단히 JWT 토큰 생성하여 반환
+    const accessTokenPayload = {
+      email: user.email,
+      sub: user.id,
+      token_type: 'access',
+    };
+
+    const newAccessToken = this.jwtService.sign(accessTokenPayload, {
+      expiresIn: '15m',
+    });
+    console.log('ChangeAccessToken : ', newAccessToken);
+
+    return {
+      message: '로그인 되었습니다',
+      access_token: newAccessToken,
+      user_id: user.id,
+    };
   }
 }
+
 // 사용자의 응모 내역 조회
 // async getUserRaffleEntries(userId: number) {
 //   const userRaffles = await this.userRaffleRepository.find({

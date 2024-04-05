@@ -6,8 +6,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
 import { JwtStrategy } from './jwt.strategy';
-// import { KakaoStrategy } from './kakao-auth.strategy';
 import { HttpModule } from '@nestjs/axios';
+// import { KakaoStrategy } from './kakao.strategy';
 
 @Module({
   imports: [

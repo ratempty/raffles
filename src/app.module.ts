@@ -5,7 +5,7 @@ import { UserModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { MarketsModule } from './markets/markets.module';
-import { CalendarsModule } from './calendars/calendars.module';
+import { CalendarModule } from './calendars/calendars.module';
 import { NewsModule } from './news/news.module';
 import { RafflesModule } from './raffles/raffles.module';
 import Joi from 'joi';
@@ -53,7 +53,7 @@ const typeOrmModuleOptions = {
     AuthModule,
     UserModule,
     MarketsModule,
-    CalendarsModule,
+    CalendarModule,
     NewsModule,
     RafflesModule,
   ],

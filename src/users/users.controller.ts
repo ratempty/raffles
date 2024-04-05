@@ -1,4 +1,3 @@
-import { UserInfo } from './utils/userInfo.decorator';
 import {
   Body,
   Controller,
@@ -58,11 +57,12 @@ export class UserController {
     });
     return accessToken;
   }
-  //회원정보상세조회
+  // 회원 정보 상세 조회
   @UseGuards(AuthGuard('jwt'))
   @Get('profile/:id')
-  async findByEmail(@Param('id') id: number): Promise<User> {
-    return await this.userService.findOne(id);
+  async findByEmail(@Param('id') id: string): Promise<User> {
+    // 그 외의 경우, 일반 사용자 ID로 조회
+    return await this.userService.findOne(parseInt(id, 10));
   }
   //회원전체조회
   @Get()
@@ -106,7 +106,6 @@ export class UserController {
     await this.userService.deleteUser(id);
   }
 
-  //카카오 로그인 로직 - 인가 코드 받는 부분
   @Get('/oauth')
   @Header('Content-Type', 'text/html')
   redirectToKakaoAuth(@Res() res) {
@@ -127,28 +126,28 @@ export class UserController {
     );
     return { message: '카카오 로그인 되었습니다' };
   }
-
-  // 사용자 응모내역 조회
-  // @Get(':userId/entries')
-  // async getUserRaffleEntries(@Param('userId') userId: number) {
-  //   const userRaffles = await this.userRaffleRepository.find({
-  //     where: { userId },
-  //     relations: ['raffle'],
-  //   });
-
-  //   if (!userRaffles || userRaffles.length === 0) {
-  //     throw new NotFoundException('사용자의 응모 내역을 찾을 수 없습니다.');
-  //   }
-
-  //   // 사용자의 응모 내역을 반환
-  //   return userRaffles.map((userRaffle) => ({
-  //     name: userRaffle.raffle.name,
-  //     imgUrl: userRaffle.raffle.imgUrl,
-  //     brand: userRaffle.raffle.brand,
-  //     shoeCode: userRaffle.raffle.shoeCode,
-  //     relPrice: userRaffle.raffle.relPrice,
-  //     raffleStartDate: userRaffle.raffle.raffleStartDate,
-  //     raffleEndDate: userRaffle.raffle.raffleEndDate,
-  //   }));
-  // }
 }
+
+// 사용자 응모내역 조회
+// @Get(':userId/entries')
+// async getUserRaffleEntries(@Param('userId') userId: number) {
+//   const userRaffles = await this.userRaffleRepository.find({
+//     where: { userId },
+//     relations: ['raffle'],
+//   });
+
+//   if (!userRaffles || userRaffles.length === 0) {
+//     throw new NotFoundException('사용자의 응모 내역을 찾을 수 없습니다.');
+//   }
+
+//   // 사용자의 응모 내역을 반환
+//   return userRaffles.map((userRaffle) => ({
+//     name: userRaffle.raffle.name,
+//     imgUrl: userRaffle.raffle.imgUrl,
+//     brand: userRaffle.raffle.brand,
+//     shoeCode: userRaffle.raffle.shoeCode,
+//     relPrice: userRaffle.raffle.relPrice,
+//     raffleStartDate: userRaffle.raffle.raffleStartDate,
+//     raffleEndDate: userRaffle.raffle.raffleEndDate,
+//   }));
+// }
