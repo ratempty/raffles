@@ -20,9 +20,6 @@ export class Shoes {
   @Column({ type: 'json' })
   imgUrl: string[];
 
-  @Column({ type: 'varchar' })
-  subName: string;
-
   @OneToMany(() => Market, (market) => market.shoes)
   market: Market[];
 }
