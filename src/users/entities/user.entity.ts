@@ -1,12 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  Index,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Role } from '../types/userRole.type';
 import { Calendar } from 'src/calendars/entities/calendar.entity';
 import { UserRaffle } from 'src/raffles/entities/userRaffle.entity';
@@ -22,17 +14,20 @@ export class User {
   @Column({ type: 'varchar', unique: true, nullable: true })
   email: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', unique: true, nullable: true })
   password: string;
 
-  @Column({ type: 'varchar', unique: true })
+  @Column({ type: 'varchar', unique: true, nullable: true })
   nickName: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', unique: true, nullable: true })
   name: string;
 
   @Column({ type: 'varchar', nullable: true })
   clientId: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  kakaoId: string; // 카카오에서 제공하는 사용자 고유 식별자
 
   @Column({ type: 'enum', enum: Role, default: Role.User })
   role: Role;

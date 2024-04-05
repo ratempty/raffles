@@ -1,9 +1,16 @@
 import { Module } from '@nestjs/common';
-import { CalendarsService } from './calendars.service';
-import { CalendarsController } from './calendars.controller';
+import { CalendarService } from './calendars.service';
+import { CalendarController } from './calendars.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Calendar } from './entities/calendar.entity';
+import { User } from 'src/users/entities/user.entity';
+import { UserService } from 'src/users/users.service';
+import { JwtModule } from '@nestjs/jwt';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  controllers: [CalendarsController],
-  providers: [CalendarsService],
+  imports: [TypeOrmModule.forFeature([Calendar, User]), JwtModule, HttpModule], // Calendar 엔티티를 사용할 수 있도록 TypeOrmModule의 forFeature() 메서드를 사용하여 임포트합니다.
+  controllers: [CalendarController],
+  providers: [CalendarService, UserService],
 })
-export class CalendarsModule {}
+export class CalendarModule {}

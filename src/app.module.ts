@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
+import { UserModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { MarketsModule } from './markets/markets.module';
-import { CalendarsModule } from './calendars/calendars.module';
+import { CalendarModule } from './calendars/calendars.module';
 import { NewsModule } from './news/news.module';
 import { RafflesModule } from './raffles/raffles.module';
 import Joi from 'joi';
@@ -16,7 +16,11 @@ import { Raffle } from './raffles/entities/raffle.entity';
 import { UserRaffle } from './raffles/entities/userRaffle.entity';
 import { Calendar } from './calendars/entities/calendar.entity';
 import { Shoes } from './markets/entities/shoes.entity';
+
+import { AuthModule } from './auth/auth.module';
+
 import { ScheduleModule } from '@nestjs/schedule';
+
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -50,9 +54,10 @@ const typeOrmModuleOptions = {
       }),
     }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
-    UsersModule,
+    AuthModule,
+    UserModule,
     MarketsModule,
-    CalendarsModule,
+    CalendarModule,
     NewsModule,
     RafflesModule,
     ScheduleModule.forRoot(),
