@@ -23,17 +23,17 @@ export class Raffle {
   @Column({ type: 'varchar' })
   brand: string;
 
-  @Column({ type: 'bigint' })
-  relPrice: number;
+  @Column({ type: 'varchar', nullable: true })
+  relPrice: string;
 
-  @Column({ type: 'json' })
-  imgUrl: string[];
+  @Column({ type: 'varchar' })
+  imgUrl: string;
 
-  @Column({ type: 'date' })
-  raffleStartDate: Date;
+  @Column({ type: 'timestamp', nullable: true })
+  raffleStartDate: number;
 
-  @Column({ type: 'date' })
-  raffleEndDate: Date;
+  @Column({ type: 'timestamp', nullable: true })
+  raffleEndDate: number;
 
   @OneToMany(() => UserRaffle, (userRaffle) => userRaffle.raffle)
   userRaffle: UserRaffle;
