@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -116,6 +117,9 @@ export class MarketsService {
       });
     }
     const updateData = updateMarketDto;
+    if (!updateData) {
+      throw new BadRequestException({ message: '수정할 내용을 입력해주세요.' });
+    }
     await this.marketsRepository.update(
       {
         id: marketId,
