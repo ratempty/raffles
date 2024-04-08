@@ -4,9 +4,7 @@ import { Repository } from 'typeorm';
 import { Market } from './entities/market.entity';
 import { Shoes } from './entities/shoes.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { SaleStatus } from './types/salesStatus.type';
-import { UseStatus } from './types/useStatus.type';
-import { create, update } from 'lodash';
+import { NotFoundException } from '@nestjs/common';
 
 describe('MarketsService', () => {
   let service: MarketsService;
@@ -253,5 +251,20 @@ describe('MarketsService', () => {
       where: { id: marketId },
     });
     expect(result).toEqual(updateMarket);
+  });
+
+  it('판매글 상세 조회 - 예외 발생', async () => {
+    const marketId = 1;
+    marketsRepositoryMock.findOne.mockResolvedValueOnce(undefined);
+
+    await expect(service.findOneMarket(marketId)).rejects.toThrow(
+      NotFoundException,
+    );
+
+    expect(marketsRepositoryMock.findOne).toHaveBeenCalledWith({
+      where: { id: marketId },
+    });
+
+    expect(marketsRepositoryMock.update).not.toHaveBeenCalled();
   });
 });
