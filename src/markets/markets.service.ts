@@ -44,7 +44,7 @@ export class MarketsService {
 
   async createMarket(
     userId: number,
-    shoeId: number,
+    shoesId: number,
     createMarketDto: CreateMarketDto,
   ) {
     const { title, content, size, imgUrl, salesStatus, price, useStatus } =
@@ -52,7 +52,7 @@ export class MarketsService {
     const view = 0;
     await this.marketsRepository.save({
       userId,
-      shoesId: shoeId,
+      shoesId,
       title,
       content,
       size,
