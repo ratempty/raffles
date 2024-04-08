@@ -144,20 +144,23 @@ export class NewsService {
   }
 
   async findPopularNews() {
-    return this.newsRepository.find({
+    const popularNews = await this.newsRepository.find({
       order: {
         views: 'DESC',
+        createdAt: 'DESC',
       },
       select: ['title', 'subTitle', 'newsImg', 'views'],
     });
+    return popularNews;
   }
 
   async findLatestNews() {
-    return this.newsRepository.find({
+    const latestNews = await this.newsRepository.find({
       order: {
         createdAt: 'DESC',
       },
       select: ['title', 'subTitle', 'newsImg', 'views'],
     });
+    return latestNews;
   }
 }
