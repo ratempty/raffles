@@ -6,7 +6,7 @@ import { Shoes } from './entities/shoes.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { SaleStatus } from './types/salesStatus.type';
 import { UseStatus } from './types/useStatus.type';
-import { create } from 'lodash';
+import { create, update } from 'lodash';
 
 describe('MarketsService', () => {
   let service: MarketsService;
@@ -203,5 +203,55 @@ describe('MarketsService', () => {
       order: { saleStatus: 'ASC', view: 'DESC' },
     });
     expect(result).toEqual({ shoesInfo, posts });
+  });
+
+  it('판매글 상세 조회', async () => {
+    const marketId = 1;
+    const market = {
+      id: 1,
+      title: '판매글1',
+      content: '내용1',
+      createdAt: '2024-04-05T03:48:36.486Z',
+      updatedAt: '2024-04-05T06:54:31.000Z',
+      size: '270mm',
+      view: '1',
+      imgUrl: ['이미지1', '이미지2'],
+      saleStatus: 0,
+      price: '120000',
+      useStatus: 0,
+      userId: 1,
+      shoesId: 1,
+    };
+    const updateMarket = {
+      id: 1,
+      title: '판매글1',
+      content: '내용1',
+      createdAt: '2024-04-05T03:48:36.486Z',
+      updatedAt: '2024-04-05T06:54:31.000Z',
+      size: '270mm',
+      view: '2',
+      imgUrl: ['이미지1', '이미지2'],
+      saleStatus: 0,
+      price: '120000',
+      useStatus: 0,
+      userId: 1,
+      shoesId: 1,
+    };
+    marketsRepositoryMock.findOne.mockResolvedValueOnce(market);
+    marketsRepositoryMock.update.mockResolvedValueOnce(updateMarket);
+    marketsRepositoryMock.findOne.mockResolvedValueOnce(updateMarket);
+    const result = await service.findOneMarket(marketId);
+
+    expect(marketsRepositoryMock.findOne).toHaveBeenCalledWith({
+      where: { id: marketId },
+    });
+    expect(marketsRepositoryMock.update).toHaveBeenCalledWith(
+      { id: marketId },
+      { view: +market.view + 1 },
+    );
+    expect(marketsRepositoryMock.findOne).toHaveBeenCalledWith({
+      where: { id: marketId },
+    });
+    expect(result).toEqual(updateMarket);
   });
 });
