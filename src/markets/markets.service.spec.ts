@@ -4,14 +4,24 @@ import { Repository } from 'typeorm';
 import { Market } from './entities/market.entity';
 import { Shoes } from './entities/shoes.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import axios from 'axios';
 
+jest.setTimeout(30000);
+jest.mock('axios');
 describe('MarketsService', () => {
   let service: MarketsService;
   let marketsRepositoryMock: Partial<
     Record<keyof Repository<Market>, jest.Mock>
   >;
   let shoesRepositoryMock: Partial<Record<keyof Repository<Shoes>, jest.Mock>>;
+  let mockedAxios = axios as jest.Mocked<typeof axios>;
+  let SneakersApiCallMock: jest.Mock;
+  let saveSneakersMock: jest.Mock;
 
   beforeEach(async () => {
     shoesRepositoryMock = {
@@ -27,6 +37,8 @@ describe('MarketsService', () => {
       update: jest.fn(),
       delete: jest.fn(),
     };
+    SneakersApiCallMock = jest.fn();
+    saveSneakersMock = jest.fn();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -74,6 +86,19 @@ describe('MarketsService', () => {
       thumbUrl: '썸네일url2',
     },
   ];
+
+  const mockRequest = {
+    url: 'https://v1-sneakers.p.rapidapi.com/v1/sneakers',
+    params: {
+      limit: '100',
+      page: '1',
+      brand: '나이키',
+    },
+    headers: {
+      'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
+      'X-RapidAPI-Host': 'v1-sneakers.p.rapidapi.com',
+    },
+  };
   it('신발 페이지별 조회', async () => {
     const page = '1';
     shoesRepositoryMock.find.mockResolvedValueOnce(shoes);
@@ -266,5 +291,207 @@ describe('MarketsService', () => {
     });
 
     expect(marketsRepositoryMock.update).not.toHaveBeenCalled();
+  });
+
+  it('판매글 수정', async () => {
+    const userId = 1;
+    const marketId = 1;
+    const market = {
+      id: 1,
+      title: '판매글1',
+      content: '내용1',
+      userId: 1,
+      shoesId: 1,
+    };
+    const updateMarketDto = {
+      title: '제목 수정',
+      content: '내용 수정',
+    };
+    marketsRepositoryMock.findOne.mockResolvedValue(market);
+    await service.updateMarket(userId, marketId, updateMarketDto);
+    expect(marketsRepositoryMock.findOne).toHaveBeenCalledWith({
+      where: { id: marketId },
+    });
+    expect(marketsRepositoryMock.update).toHaveBeenLastCalledWith(
+      { id: marketId },
+      updateMarketDto,
+    );
+  });
+
+  it('판매글 수정 - 예외 발생(권한없음)', async () => {
+    const marketId = 1;
+    const userId = 2;
+    const market = {
+      id: 1,
+      userId: 1,
+      shoesId: 1,
+    };
+    const updateMarketDto = {
+      title: '제목 수정',
+      content: '내용 수정',
+    };
+    marketsRepositoryMock.findOne.mockResolvedValue(market);
+    await expect(
+      service.updateMarket(userId, marketId, updateMarketDto),
+    ).rejects.toThrow(UnauthorizedException);
+    expect(marketsRepositoryMock.findOne).toHaveBeenCalledWith({
+      where: { id: marketId },
+    });
+  });
+
+  it('판매글 수정 - 예외 발생(수정 내용 없음)', async () => {
+    const marketId = 1;
+    const userId = 1;
+    const market = {
+      id: 1,
+      userId: 1,
+      shoesId: 1,
+    };
+    const updateMarketDto = undefined;
+    marketsRepositoryMock.findOne.mockResolvedValue(market);
+    await expect(
+      service.updateMarket(userId, marketId, updateMarketDto),
+    ).rejects.toThrow(BadRequestException);
+    expect(marketsRepositoryMock.findOne).toHaveBeenCalledWith({
+      where: { id: marketId },
+    });
+  });
+
+  it('판매글 삭제', async () => {
+    const marketId = 1;
+    const userId = 1;
+    const market = {
+      id: 1,
+      userId: 1,
+      shoesId: 1,
+    };
+
+    marketsRepositoryMock.findOne.mockResolvedValue(market);
+    await service.deleteMarket(userId, marketId);
+    expect(marketsRepositoryMock.findOne).toHaveBeenCalledWith({
+      where: { id: marketId },
+    });
+    expect(marketsRepositoryMock.delete).toHaveBeenLastCalledWith({
+      id: marketId,
+    });
+  });
+
+  it('판매글 삭제 - 예외 발생', async () => {
+    const marketId = 1;
+    const userId = 2;
+    const market = {
+      id: 1,
+      userId: 1,
+      shoesId: 1,
+    };
+    marketsRepositoryMock.findOne.mockResolvedValue(market);
+    await expect(service.deleteMarket(userId, marketId)).rejects.toThrow(
+      UnauthorizedException,
+    );
+    expect(marketsRepositoryMock.findOne).toHaveBeenCalledWith({
+      where: { id: marketId },
+    });
+
+    expect(marketsRepositoryMock.delete).not.toHaveBeenCalled();
+  });
+
+  it('신발 데이터 요청', async () => {
+    const page = '1';
+    const brand = '나이키';
+    const responseData = [
+      { id: 1, name: '신발1' },
+      { id: 2, name: '신발2' },
+    ];
+    const response = { data: responseData };
+    mockedAxios.get.mockResolvedValue(response);
+    const result = await service.SneakersApiCall(page, brand);
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      mockRequest.url,
+      expect.objectContaining({
+        params: mockRequest.params,
+        headers: mockRequest.headers,
+      }),
+    );
+    expect(result).toEqual(responseData);
+  });
+
+  it('신발 데이터 요청 - 예외 발생', async () => {
+    const page = '1';
+    const brand = '나이키';
+    const errorMessage = 'Failed to fetch sneakers data';
+    mockedAxios.get.mockRejectedValue(new Error(errorMessage));
+    await expect(service.SneakersApiCall(page, brand)).rejects.toThrow(
+      errorMessage,
+    );
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      'https://v1-sneakers.p.rapidapi.com/v1/sneakers',
+      {
+        params: {
+          limit: '100',
+          page: '1',
+          brand: '나이키',
+        },
+        headers: {
+          'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
+          'X-RapidAPI-Host': 'v1-sneakers.p.rapidapi.com',
+        },
+      },
+    );
+  });
+
+  it('신발 데이터 연속 요청', async () => {
+    const saveShoesDto = { brand: 'testBrand' };
+    const mockedSneakersData = {
+      results: [
+        {
+          brand: 'testBrand',
+          styleId: '123',
+          title: 'Test Sneakers 1',
+          media: { imageUrl: 'image1.jpg' },
+        },
+        {
+          brand: 'testBrand',
+          styleId: '456',
+          title: 'Test Sneakers 2',
+          media: { imageUrl: 'image2.jpg' },
+        },
+      ],
+    };
+    const mockedSneakersApiCall = jest.spyOn(service, 'SneakersApiCall');
+    mockedSneakersApiCall.mockResolvedValue(mockedSneakersData);
+
+    const mockedSaveSneakers = jest.spyOn(service, 'saveSneakers');
+    mockedSaveSneakers.mockResolvedValue();
+
+    await service.fetchSneakers(saveShoesDto);
+
+    expect(mockedSneakersApiCall).toHaveBeenCalledTimes(15);
+    expect(mockedSaveSneakers).toHaveBeenCalledTimes(15);
+    expect(mockedSaveSneakers).toHaveBeenCalledWith([
+      {
+        brand: 'testBrand',
+        shoeCode: '123',
+        name: 'Test Sneakers 1',
+        imgUrl: { imageUrl: 'image1.jpg' },
+      },
+      {
+        brand: 'testBrand',
+        shoeCode: '456',
+        name: 'Test Sneakers 2',
+        imgUrl: { imageUrl: 'image2.jpg' },
+      },
+    ]);
+  });
+
+  it('신발 데이터 저장', async () => {
+    const mockData = [
+      { id: 1, name: '신발1' },
+      { id: 2, name: '신발2' },
+      null,
+      { id: 3, name: '신발3' },
+    ];
+    const filteredData = mockData.filter((sneakers) => sneakers !== null);
+    await service.saveSneakers(mockData);
+    expect(shoesRepositoryMock.save).toHaveBeenCalledWith(filteredData);
   });
 });
