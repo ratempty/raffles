@@ -22,9 +22,7 @@ export class RafflesService {
     private userRaffleRepository: Repository<UserRaffle>,
   ) {}
 
-  arr = [];
-  info = [];
-  productIdArr = [];
+  // 객체가 생성될때
 
   // 전체 응모 정보 조회
   async getRaffles() {
@@ -80,8 +78,7 @@ export class RafflesService {
       raffleId,
     });
 
-    if (isExistUserRaffle) {
-      // 이거 탈 경우가 있나? 어차피 프론트에서 실행 못시키게 할거같은데
+    if (isExistUserRaffle.length === 1) {
       throw new ConflictException('이미 참여한 응모입니다.');
     }
 
@@ -96,12 +93,11 @@ export class RafflesService {
   // 응모 참여 여부 (참여) = userRaffle 삭제
   async deleteUserRaffle(raffleId: number, userId: number) {
     const existUserRaffle = await this.userRaffleRepository.findBy({
-      userId,
-      raffleId,
+      userId: +userId,
+      raffleId: +raffleId,
     });
 
-    if (!existUserRaffle) {
-      // 이거 탈 경우가 있나? 어차피 프론트에서 실행 못시키게 할거같은데
+    if (existUserRaffle.length === 0) {
       throw new NotFoundException('참여한 응모가 아닙니다.');
     }
 
@@ -149,18 +145,20 @@ export class RafflesService {
       );
       const result = response.data.results;
 
+      let productIdArr: Array<number> = [];
+
       for (let i = 0; i < result.length; i++) {
         let productId = result[i].product.id;
-        this.productIdArr.push(productId);
+        productIdArr.push(productId);
       }
-      return this.productIdArr;
+      return productIdArr;
     } catch (error) {
       console.error(error);
       throw error;
     }
   }
 
-  async scrapInfo() {
+  async scrapInfo(productIdArr: Array<number>) {
     const headers = {
       accept: '*/*',
       'accept-language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
@@ -179,13 +177,13 @@ export class RafflesService {
 
     const productInfos = [];
 
-    for (let i = 0; i < this.productIdArr.length; i++) {
+    for (let i = 0; i < productIdArr.length; i++) {
       const params = {
         page: 1,
         page_size: 50,
         is_end: false,
         ordering: 'end_time,-id',
-        product_id: this.productIdArr[i],
+        product_id: productIdArr[i],
       };
 
       try {
@@ -197,10 +195,19 @@ export class RafflesService {
         const result = response.data.results;
 
         const filterInfo = result.filter((raffle) => {
-          const need =
+          const need1 =
             raffle.method !== '온라인 선착순' &&
             raffle.method !== '오프라인 선착순';
-          return need;
+
+          const need2 = !(
+            raffle.product.name &&
+            (raffle.product.name.includes('후디') ||
+              raffle.product.name.includes('자켓') ||
+              raffle.product.name.includes('티셔츠') ||
+              raffle.product.name.includes('팬츠'))
+          );
+
+          return need1 && need2;
         });
 
         const needInfo = filterInfo.map((raffle) => ({
@@ -241,5 +248,10 @@ export class RafflesService {
       }
     }
     return productInfos;
+  }
+
+  async raffleScrap() {
+    const raffles = this.scrapInfo(await this.scrapUrl());
+    return raffles;
   }
 }

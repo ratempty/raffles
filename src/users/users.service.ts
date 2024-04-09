@@ -1,7 +1,6 @@
 import { compare, hash } from 'bcrypt';
 import _ from 'lodash';
 import { Repository } from 'typeorm';
-import { HttpService } from '@nestjs/axios';
 
 import {
   BadRequestException,
@@ -15,18 +14,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { firstValueFrom } from 'rxjs';
-// import { UserRaffle } from 'src/raffles/entities/userRaffle.entity';
+import { UserRaffle } from '../raffles/entities/userRaffle.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    // @InjectRepository(UserRaffle)
-    // private userRaffleRepository: Repository<UserRaffle>,
+    @InjectRepository(UserRaffle)
+    private userRaffleRepository: Repository<UserRaffle>,
     private readonly jwtService: JwtService,
-    private http: HttpService,
   ) {}
 
   // 회원가입 메소드
@@ -157,97 +154,26 @@ export class UserService {
     await this.userRepository.delete({ id });
   }
 
-  // 카카오 로그인 메소드
-  async kakaoLogin(
-    KAKAO_REST_API_KEY: string,
-    KAKAO_REDIRECT_URI: string,
-    code: string,
-  ): Promise<{ message: string; access_token: string; user_id: number }> {
-    const config = {
-      grant_type: 'authorization_code',
-      client_id: KAKAO_REST_API_KEY,
-      redirect_uri: KAKAO_REDIRECT_URI,
-      code,
-    };
-
-    const params = new URLSearchParams(config).toString();
-    const tokenHeaders = {
-      'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
-    };
-    const tokenUrl = `https://kauth.kakao.com/oauth/token?${params}`;
-
-    // 카카오로부터 access token 요청
-    const tokenRes = await firstValueFrom(
-      this.http.post(tokenUrl, '', { headers: tokenHeaders }),
-    );
-
-    // AccessToken 받기
-    const accessToken = tokenRes.data.access_token;
-
-    // 카카오로부터 사용자 정보 요청
-    const userInfoUrl = `https://kapi.kakao.com/v2/user/me`;
-    const userInfoHeaders = {
-      Authorization: `Bearer ${accessToken}`,
-    };
-
-    const userInfoRes = await firstValueFrom(
-      this.http.get(userInfoUrl, { headers: userInfoHeaders }),
-    );
-    console.log('User Info:', userInfoRes.data);
-    const data = userInfoRes.data;
-
-    // 카카오 사용자 정보를 로컬 DB에 저장
-    let user = await this.userRepository.findOne({
-      where: { kakaoId: data.id },
+  // 사용자의 응모 내역 조회
+  async getUserRaffleEntries(userId: number) {
+    const userRaffles = await this.userRaffleRepository.find({
+      where: { userId },
+      relations: ['raffle'], // 응모 정보를 함께 로드하기 위해 관계 추가
     });
-    if (!user) {
-      // 카카오 사용자가 사이트에 가입되어 있지 않은 경우, 자동으로 가입시킴
-      user = new User();
-      user.kakaoId = data.id;
-      user.email = data.kakao_account.email; // 카카오에서 제공하는 이메일 정보 활용
-      user.name = data.kakao_account.profile.name; // 카카오에서 제공하는 이름 정보 활용
 
-      await this.userRepository.save(user);
+    if (!userRaffles || userRaffles.length === 0) {
+      throw new NotFoundException('사용자의 응모 내역을 찾을 수 없습니다.');
     }
 
-    // 여기서는 간단히 JWT 토큰 생성하여 반환
-    const accessTokenPayload = {
-      email: user.email,
-      sub: user.id,
-      token_type: 'access',
-    };
-
-    const newAccessToken = this.jwtService.sign(accessTokenPayload, {
-      expiresIn: '15m',
-    });
-    console.log('ChangeAccessToken : ', newAccessToken);
-
-    return {
-      message: '로그인 되었습니다',
-      access_token: newAccessToken,
-      user_id: user.id,
-    };
+    // 사용자의 응모 내역을 반환
+    return userRaffles.map((userRaffle) => ({
+      name: userRaffle.raffle.name,
+      imgUrl: userRaffle.raffle.imgUrl,
+      brand: userRaffle.raffle.brand,
+      shoeCode: userRaffle.raffle.shoeCode,
+      relPrice: userRaffle.raffle.relPrice,
+      raffleStartDate: userRaffle.raffle.raffleStartDate,
+      raffleEndDate: userRaffle.raffle.raffleEndDate,
+    }));
   }
 }
-
-// 사용자의 응모 내역 조회
-// async getUserRaffleEntries(userId: number) {
-//   const userRaffles = await this.userRaffleRepository.find({
-//     where: { userId },
-//     relations: ['raffle'], // 응모 정보를 함께 로드하기 위해 관계 추가
-//   });
-
-//   if (!userRaffles || userRaffles.length === 0) {
-//     throw new NotFoundException('사용자의 응모 내역을 찾을 수 없습니다.');
-//   }
-
-//   // 사용자의 응모 내역을 반환
-//   return userRaffles.map((userRaffle) => ({
-//     name: userRaffle.raffle.name,
-//     imgUrl: userRaffle.raffle.imgUrl,
-//     brand: userRaffle.raffle.brand,
-//     shoeCode: userRaffle.raffle.shoeCode,
-//     relPrice: userRaffle.raffle.relPrice,
-//     raffleStartDate: userRaffle.raffle.raffleStartDate,
-//     raffleEndDate: userRaffle.raffle.raffleEndDate,
-//   }));
