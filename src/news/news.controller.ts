@@ -1,6 +1,8 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, Req } from '@nestjs/common';
 import { NewsService } from './news.service';
 import { CreateNewsDto } from './dto/create-news.dto';
+import { Request } from 'express';
+import { Cron } from '@nestjs/schedule';
 
 @Controller('news')
 export class NewsController {
@@ -8,33 +10,35 @@ export class NewsController {
 
   @Get('footwear')
   async getHTML() {
-    return this.newsService.getHTML();
+    return await this.newsService.getHTML();
   }
 
+  @Cron('0 */3 * * *') // 3시간마다 실행
   @Get('scrapeAll')
   async scrapeAll() {
-    return this.newsService.scrapeAll();
+    return await this.newsService.scrapeAll();
   }
 
   @Get()
   async findAllNews() {
-    return this.newsService.findAllNews();
+    return await this.newsService.findAllNews();
   }
 
   @Get(':id')
   async findOneNews(@Param('id') id: number) {
     await this.newsService.viewCount(id);
-    return this.newsService.findOneNews(id);
+    return await this.newsService.findOneNews(id);
   }
 
-  @Get()
-  async findNews(@Query('type') type: string) {
+  @Get('find/finds')
+  async findNews(@Req() req: Request) {
+    const type = req.query.type as string;
     if (type === 'popular') {
-      return this.newsService.findPopularNews();
+      return await this.newsService.findPopularNews();
     } else if (type === 'latest') {
-      return this.newsService.findLatestNews();
+      return await this.newsService.findLatestNews();
     } else {
-      return this.newsService.findAllNews();
+      return await this.newsService.findAllNews();
     }
   }
 }
