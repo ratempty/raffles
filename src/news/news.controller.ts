@@ -8,11 +8,6 @@ import { Cron } from '@nestjs/schedule';
 export class NewsController {
   constructor(private readonly newsService: NewsService) {}
 
-  @Get('footwear')
-  async getHTML() {
-    return await this.newsService.getHTML();
-  }
-
   @Cron('0 */3 * * *') // 3시간마다 실행
   @Get('scrapeAll')
   async scrapeAll() {
@@ -24,15 +19,8 @@ export class NewsController {
     return await this.newsService.findAllNews();
   }
 
-  @Get(':id')
-  async findOneNews(@Param('id') id: number) {
-    await this.newsService.viewCount(id);
-    return await this.newsService.findOneNews(id);
-  }
-
-  @Get('find/finds')
-  async findNews(@Req() req: Request) {
-    const type = req.query.type as string;
+  @Get('find')
+  async findNews(@Query('type') type: string) {
     if (type === 'popular') {
       return await this.newsService.findPopularNews();
     } else if (type === 'latest') {
@@ -40,5 +28,11 @@ export class NewsController {
     } else {
       return await this.newsService.findAllNews();
     }
+  }
+
+  @Get(':id')
+  async findOneNews(@Param('id') id: number) {
+    await this.newsService.viewCount(id);
+    return await this.newsService.findOneNews(id);
   }
 }
