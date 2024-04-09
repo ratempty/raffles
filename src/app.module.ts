@@ -20,7 +20,7 @@ import { Shoes } from './markets/entities/shoes.entity';
 import { AuthModule } from './auth/auth.module';
 
 import { ScheduleModule } from '@nestjs/schedule';
-
+import { OauthModule } from './oauth/oauth.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -61,6 +61,7 @@ const typeOrmModuleOptions = {
     NewsModule,
     RafflesModule,
     ScheduleModule.forRoot(),
+    OauthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

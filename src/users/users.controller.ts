@@ -10,9 +10,6 @@ import {
   Res,
   NotFoundException,
   UnauthorizedException,
-  Header,
-  HttpStatus,
-  Query,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
@@ -22,10 +19,11 @@ import { RegisterDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtGuard } from 'src/auth/guard';
+import { JwtGuard } from '../auth/guard';
 
 @Controller('user')
 export class UserController {
+  userRaffleRepository: any;
   constructor(
     private readonly userService: UserService,
     // private readonly userRaffleRepository: UserRaffleRepository,
@@ -106,48 +104,27 @@ export class UserController {
     await this.userService.deleteUser(id);
   }
 
-  @Get('/oauth')
-  @Header('Content-Type', 'text/html')
-  redirectToKakaoAuth(@Res() res) {
-    const KAKAO_REST_API_KEY = process.env.KAKAO_REST_API_KEY;
-    const KAKAO_REDIRECT_URI = process.env.KAKAO_REDIRECT_URI;
-    const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${KAKAO_REST_API_KEY}&redirect_uri=${KAKAO_REDIRECT_URI}`;
-    res.redirect(HttpStatus.TEMPORARY_REDIRECT, kakaoAuthURL);
-  }
-  // 사용자 정보 불러오는 로직
-  @Get('/oauth/kakao-auth')
-  async getKakaoInfo(@Query() query: { code }) {
-    const KAKAO_REST_API_KEY = process.env.KAKAO_REST_API_KEY;
-    const KAKAO_REDIRECT_URI = process.env.KAKAO_REDIRECT_URI;
-    await this.userService.kakaoLogin(
-      KAKAO_REST_API_KEY,
-      KAKAO_REDIRECT_URI,
-      query.code,
-    );
-    return { message: '카카오 로그인 되었습니다' };
+  // 사용자 응모내역 조회
+  @Get(':userId/entries')
+  async getUserRaffleEntries(@Param('userId') userId: number) {
+    const userRaffles = await this.userRaffleRepository.find({
+      where: { userId },
+      relations: ['raffle'],
+    });
+
+    if (!userRaffles || userRaffles.length === 0) {
+      throw new NotFoundException('사용자의 응모 내역을 찾을 수 없습니다.');
+    }
+
+    // 사용자의 응모 내역을 반환
+    return userRaffles.map((userRaffle) => ({
+      name: userRaffle.raffle.name,
+      imgUrl: userRaffle.raffle.imgUrl,
+      brand: userRaffle.raffle.brand,
+      shoeCode: userRaffle.raffle.shoeCode,
+      relPrice: userRaffle.raffle.relPrice,
+      raffleStartDate: userRaffle.raffle.raffleStartDate,
+      raffleEndDate: userRaffle.raffle.raffleEndDate,
+    }));
   }
 }
-
-// 사용자 응모내역 조회
-// @Get(':userId/entries')
-// async getUserRaffleEntries(@Param('userId') userId: number) {
-//   const userRaffles = await this.userRaffleRepository.find({
-//     where: { userId },
-//     relations: ['raffle'],
-//   });
-
-//   if (!userRaffles || userRaffles.length === 0) {
-//     throw new NotFoundException('사용자의 응모 내역을 찾을 수 없습니다.');
-//   }
-
-//   // 사용자의 응모 내역을 반환
-//   return userRaffles.map((userRaffle) => ({
-//     name: userRaffle.raffle.name,
-//     imgUrl: userRaffle.raffle.imgUrl,
-//     brand: userRaffle.raffle.brand,
-//     shoeCode: userRaffle.raffle.shoeCode,
-//     relPrice: userRaffle.raffle.relPrice,
-//     raffleStartDate: userRaffle.raffle.raffleStartDate,
-//     raffleEndDate: userRaffle.raffle.raffleEndDate,
-//   }));
-// }

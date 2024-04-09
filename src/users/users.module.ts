@@ -8,8 +8,7 @@ import { User } from './entities/user.entity';
 import { UserController } from './users.controller';
 import { UserService } from './users.service';
 import { Calendar } from 'src/calendars/entities/calendar.entity';
-import { HttpModule } from '@nestjs/axios';
-// import { UserRaffle } from 'src/raffles/entities/userRaffle.entity';
+import { UserRaffle } from 'src/raffles/entities/userRaffle.entity';
 
 @Module({
   imports: [
@@ -19,8 +18,7 @@ import { HttpModule } from '@nestjs/axios';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User, Calendar]),
-    HttpModule,
+    TypeOrmModule.forFeature([User, Calendar, UserRaffle]),
   ],
   providers: [UserService],
   controllers: [UserController],
