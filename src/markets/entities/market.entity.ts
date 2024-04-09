@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { SaleStatus } from '../types/salesStatus.type';
 import { UseStatus } from '../types/useStatus.type';
-import { User } from 'src/users/entities/user.entity';
+import { User } from '../../users/entities/user.entity';
 import { Shoes } from './shoes.entity';
 
 @Entity({

@@ -6,7 +6,6 @@ import { User } from 'src/users/entities/user.entity';
 import { UserInfo } from 'src/users/utils/userInfo.decorator';
 import { Cron } from '@nestjs/schedule';
 
-
 @Controller('raffles')
 export class RafflesController {
   constructor(private readonly rafflesService: RafflesService) {}
