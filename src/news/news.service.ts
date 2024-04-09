@@ -144,7 +144,7 @@ export class NewsService {
   }
 
   async findPopularNews() {
-    return this.newsRepository.find({
+    return await this.newsRepository.find({
       order: {
         views: 'DESC',
       },
