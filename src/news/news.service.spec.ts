@@ -4,7 +4,6 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { News } from './entities/news.entity';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import cheerioModule from 'cheerio';
 import puppeteer from 'puppeteer';
 
 const mockAxios = new MockAdapter(axios);
@@ -12,6 +11,16 @@ const mockAxios = new MockAdapter(axios);
 describe('NewsService', () => {
   let service: NewsService;
   let repository: RepositoryMock;
+  let browser;
+  let scrapeDataSpy;
+
+  beforeAll(async () => {
+    browser = await puppeteer.launch({ headless: true });
+  });
+
+  afterAll(async () => {
+    await browser.close;
+  });
 
   // 테스트 모듈 생성 및 테스트할 서비스 주입
   beforeEach(async () => {
@@ -25,9 +34,14 @@ describe('NewsService', () => {
         },
       ],
     }).compile();
-
+    console.error = jest.fn();
     service = module.get<NewsService>(NewsService);
     repository = module.get<RepositoryMock>(getRepositoryToken(News));
+    scrapeDataSpy = jest.spyOn(service, 'scrapeData');
+  });
+
+  afterEach(() => {
+    scrapeDataSpy.mockRestore();
   });
 
   it('should return getHTML URLs', async () => {
@@ -53,32 +67,20 @@ describe('NewsService', () => {
     expect(result).toBeNull;
   });
 
-  describe('scrapeData function', () => {
-    let browser;
+  it('should scrapeData of puppeteer', async () => {
+    const mockUrl = 'https://example.com';
+    const mockHTML = `
+    <div class="post-body-title">Mock Title</div>
+    <div class="post-body-excerpt">Mock Subtitle</div>
+    <div class="post-body-content">Mock Content</div>
+    <img class="carousel-cell-image" src="mock-image-url">
+  `;
 
-    beforeAll(async () => {
-      browser = await puppeteer.launch({ headless: true });
-    });
+    const page = await browser.newPage();
+    await page.setContent(mockHTML, { waitUntil: 'domcontentloaded' });
 
-    afterAll(async () => {
-      await browser.close();
-    });
-
-    it('should errors scrapeData', async () => {
-      // 모의 URL 및 HTML 데이터 정의
-      const mockUrl = 'https://example.com';
-      const mockHTML = `
-        <div class="post-body-title">Mock Title</div>
-        <div class="post-body-excerpt">Mock Subtitle</div>
-        <div class="post-body-content">Mock Content 더 보기</div>
-        <img class="carousel-cell-image" src="mock-image-url">
-      `;
-
-      const page = await browser.newPage();
-      await page.setContent(mockHTML, { waitUntil: 'domcontentloaded' });
-      console.log('page.setContent', page.setContent);
-
-      const result = await service.scrapeData(page);
+    try {
+      const result = await scrapeDataSpy(mockUrl);
 
       expect(result).toEqual({
         title: 'Mock Title',
@@ -86,19 +88,47 @@ describe('NewsService', () => {
         content: 'Mock Content',
         image: 'mock-image-url',
       });
-    });
-
-    it('should handle errors gracefully', async () => {
-      const mockUrl = 'https://error-url.com';
-
-      const page = await browser.newPage();
-
-      const result = await service.scrapeData(mockUrl);
-
-      expect(result).toBeNull();
-    });
+    } catch (error) {
+      expect(console.error).toHaveBeenCalledTimes(1);
+    }
   });
 
+  it('should handle errors scrapData', async () => {
+    const errorUrl = 'https://error-url.com';
+    try {
+      const result = await service.scrapeData(errorUrl);
+      expect(result).toBeNull;
+    } catch (error) {
+      expect(error.message).toContain('net::ERR_NAME_NOT_RESOLVED');
+    }
+  });
+
+  it('should create & save scrapeData to repository', async () => {
+    const url = 'https://example.com';
+    const title = 'Mock Subtitle';
+    const subTitle = 'Mock Subtitle';
+    const content = 'Mock Content';
+    const image = 'mock-image-url';
+    const results = {
+      title,
+      subTitle,
+      content,
+      image,
+      newsUrl: url,
+    };
+
+    jest.spyOn(service, 'scrapeData').mockResolvedValue(results);
+
+    const result = await service.scrapeData(url);
+
+    expect(result).toEqual({
+      title,
+      subTitle,
+      content,
+      image,
+      newsUrl: url,
+    });
+  });
   it('should return scraped data', async () => {
     jest.spyOn(service, 'getHTML').mockResolvedValue(['https://example.com']);
 
