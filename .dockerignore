@@ -1,0 +1,8 @@
+node_modelues/*
+.env
+.git
+.gitignore
+.dockerignore
+Dockerfile
+*.md
+*.yml
