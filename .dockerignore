@@ -1,4 +1,4 @@
-node_modelues/*
+/node_modules
 .env
 .git
 .gitignore
