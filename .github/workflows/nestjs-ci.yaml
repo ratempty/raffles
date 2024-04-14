@@ -85,5 +85,5 @@ jobs:
 
             # node 관련 환경 설정 가져오기 위해 실행
             source /home/ubuntu/.nvm/nvm.sh
-            # # 서버 실행 시크립트 가동!
-            # source ./run.sh
+            # 서버 실행 시크립트 가동!
+            source ../run.sh
