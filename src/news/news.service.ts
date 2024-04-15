@@ -108,6 +108,7 @@ export class NewsService {
 
   async findAllNews(): Promise<
     {
+      id: number;
       title: string;
       subTitle: string;
       newsImg: string;
@@ -116,6 +117,7 @@ export class NewsService {
   > {
     const news = await this.newsRepository.find();
     return news.map((item) => ({
+      id: item.id,
       title: item.title,
       subTitle: item.subTitle,
       newsImg: item.newsImg,
