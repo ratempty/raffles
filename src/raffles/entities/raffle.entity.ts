@@ -37,4 +37,10 @@ export class Raffle {
 
   @OneToMany(() => UserRaffle, (userRaffle) => userRaffle.raffle)
   userRaffle: UserRaffle[];
+
+  @Column({ type: 'varchar' })
+  releaseMarketIcon: string;
+
+  @Column({ type: 'varchar' })
+  releaseMarketName: string;
 }

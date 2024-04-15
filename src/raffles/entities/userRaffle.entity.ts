@@ -1,6 +1,7 @@
 import { User } from '../../users/entities/user.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -30,4 +31,7 @@ export class UserRaffle {
 
   @Column({ type: 'bigint' })
   raffleId: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
 }
