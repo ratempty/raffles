@@ -44,7 +44,7 @@ export class MarketsService {
 
   async createMarket(
     userId: number,
-    shoeId: number,
+    shoesId: number,
     createMarketDto: CreateMarketDto,
   ) {
     const { title, content, size, imgUrl, salesStatus, price, useStatus } =
@@ -52,7 +52,7 @@ export class MarketsService {
     const view = 0;
     await this.marketsRepository.save({
       userId,
-      shoeId,
+      shoesId,
       title,
       content,
       size,
@@ -73,10 +73,9 @@ export class MarketsService {
     const shoesInfo = {
       name: shoes.name,
       brand: shoes.brand,
-      shooCode: shoes.shoeCode,
+      shoeCode: shoes.shoeCode,
       imageUrl: shoes.imgUrl['imageUrl'],
     };
-    console.log(shoesInfo);
     const posts = await this.marketsRepository.find({
       where: { shoesId },
       order: {
@@ -96,7 +95,7 @@ export class MarketsService {
     }
     await this.marketsRepository.update(
       { id: market.id },
-      { view: market.view + 1 },
+      { view: +market.view + 1 },
     );
     const updateMarket = await this.marketsRepository.findOne({
       where: { id: marketId },

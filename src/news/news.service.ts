@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { News } from './entities/news.entity';
 import { Repository } from 'typeorm';
@@ -74,6 +74,10 @@ export class NewsService {
       content = content.replace(/\s+/g, ' ');
       console.log({ title, subTitle, content, image });
 
+      if (!title || !subTitle || !content || !image) {
+        throw new BadRequestException();
+      }
+
       const news = this.newsRepository.create({
         title,
         subTitle,
@@ -86,7 +90,6 @@ export class NewsService {
       return { title, subTitle, content, image };
     } catch (error) {
       console.error('Error:', error);
-      return null;
     }
   }
 

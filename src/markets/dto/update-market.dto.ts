@@ -8,5 +8,5 @@ export class UpdateMarketDto {
   imgUrl?: string[];
   salesStatus?: SaleStatus;
   price?: number;
-  useStatus: UseStatus;
+  useStatus?: UseStatus;
 }
