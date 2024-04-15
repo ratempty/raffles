@@ -47,6 +47,15 @@
 
 <br>
 
+# 🕸 Architecture
+
+
+![raffles-service-arch drawio](https://github.com/ratempty/raffles/assets/138560050/1ab94fc7-f06d-48af-a1c9-553b09a38748)
+
+  
+
+<br>
+
 # 📝Commit Convention
 
 <details>
