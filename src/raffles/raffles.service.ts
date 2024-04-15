@@ -22,8 +22,6 @@ export class RafflesService {
     private userRaffleRepository: Repository<UserRaffle>,
   ) {}
 
-  // 객체가 생성될때
-
   // 전체 응모 정보 조회
   async getRaffles() {
     const today = new Date();
@@ -44,22 +42,40 @@ export class RafflesService {
       59,
     );
 
+    // 오늘 가능한 응모들
     const todayRaffles = await this.raffleRepository
       .createQueryBuilder('raffle')
       .where(
-        '(raffle.raffleStartDate IS NULL OR raffle.raffleStartDate < :endOfToday) AND raffle.raffleEndDate > :startOfToday',
-        { startOfToday, endOfToday },
+        '(raffle.raffleStartDate IS NULL OR raffle.raffleStartDate <= :endOfToday) AND raffle.raffleEndDate >= :startOfToday',
+        { startOfToday, endOfToday, now: today },
       )
       .getMany();
 
     const raffles = todayRaffles.map((todayRaffle) => ({
+      id: todayRaffle.id,
       subName: todayRaffle.subName,
       brand: todayRaffle.brand,
       imgUrl: todayRaffle.imgUrl,
       shoeCode: todayRaffle.shoeCode,
     }));
 
-    return raffles;
+    // 나중에 가능한 응모들
+    const willRaffles = await this.raffleRepository
+      .createQueryBuilder('raffle')
+      .where(
+        '(raffle.raffleStartDate IS NULL OR raffle.raffleStartDate > :endOfToday) AND raffle.raffleEndDate > :startOfToday AND raffle.raffleEndDate > :now',
+        { startOfToday, endOfToday, now: today },
+      )
+      .getMany();
+
+    const soonRaffles = willRaffles.map((willRaffle) => ({
+      subName: willRaffle.subName,
+      brand: willRaffle.brand,
+      imgUrl: willRaffle.imgUrl,
+      shoeCode: willRaffle.shoeCode,
+    }));
+
+    return [raffles, soonRaffles];
   }
 
   // 응모 상세 정보 조회
@@ -69,6 +85,30 @@ export class RafflesService {
     });
 
     return raffles;
+  }
+
+  // 내가 참여한 응모 정보 가져오기
+  async getUserRaffle(userId: number) {
+    const userRaffles = await this.userRaffleRepository.find({
+      where: { userId },
+    });
+
+    const raffleInfoArray = [];
+
+    for (const userRaffle of userRaffles) {
+      const raffle = await this.raffleRepository.findBy({
+        id: userRaffle.raffleId,
+      });
+
+      const raffleInfo = {
+        raffle,
+        createdAt: userRaffle.createdAt,
+      };
+
+      raffleInfoArray.push(raffleInfo);
+    }
+
+    return raffleInfoArray;
   }
 
   // 응모 참여 여부 (참여) = userRaffle 생성
@@ -153,7 +193,7 @@ export class RafflesService {
       }
       return productIdArr;
     } catch (error) {
-      console.error(error);
+      console.log(error);
       throw error;
     }
   }
@@ -203,6 +243,9 @@ export class RafflesService {
             raffle.product.name &&
             (raffle.product.name.includes('후디') ||
               raffle.product.name.includes('자켓') ||
+              raffle.product.name.includes('쇼츠') ||
+              raffle.product.name.includes('셔츠') ||
+              raffle.product.name.includes('캡') ||
               raffle.product.name.includes('티셔츠') ||
               raffle.product.name.includes('팬츠'))
           );
@@ -228,11 +271,13 @@ export class RafflesService {
             .slice(0, 19)
             .replace('T', ' '),
           raffleUrl: raffle.url,
+          releaseMarketName: raffle.releaseMarket.name,
+          releaseMarketIcon: raffle.releaseMarket.icon,
         }));
 
         productInfos.push(needInfo);
       } catch (error) {
-        console.error(error);
+        console.log(error);
         throw error;
       }
     }
