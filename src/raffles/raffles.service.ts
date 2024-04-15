@@ -193,7 +193,7 @@ export class RafflesService {
       }
       return productIdArr;
     } catch (error) {
-      console.error(error);
+      console.log(error);
       throw error;
     }
   }
@@ -277,7 +277,7 @@ export class RafflesService {
 
         productInfos.push(needInfo);
       } catch (error) {
-        console.error(error);
+        console.log(error);
         throw error;
       }
     }
