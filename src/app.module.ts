@@ -21,6 +21,7 @@ import { AuthModule } from './auth/auth.module';
 
 import { ScheduleModule } from '@nestjs/schedule';
 import { OauthModule } from './oauth/oauth.module';
+import { SearchModule } from './search/search.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -62,6 +63,7 @@ const typeOrmModuleOptions = {
     RafflesModule,
     ScheduleModule.forRoot(),
     OauthModule,
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [AppService],
