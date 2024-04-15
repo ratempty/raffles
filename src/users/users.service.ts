@@ -90,6 +90,7 @@ export class UserService {
     }); // Refresh Token의 유효기간은 7일
 
     return {
+      userId: user.id,
       message: '로그인 되었습니다',
       access_token: accessToken,
       refresh_token: refreshToken,

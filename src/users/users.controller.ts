@@ -20,6 +20,7 @@ import { User } from './entities/user.entity';
 import { UserService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtGuard } from '../auth/guard';
+import { UserInfo } from './utils/userInfo.decorator';
 
 @Controller('user')
 export class UserController {
@@ -56,6 +57,7 @@ export class UserController {
     return accessToken;
   }
   // 회원 정보 상세 조회
+
   @UseGuards(AuthGuard('jwt'))
   @Get('profile/:id')
   async findByEmail(@Param('id') id: string): Promise<User> {

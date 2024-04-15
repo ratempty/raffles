@@ -40,6 +40,14 @@ export class RafflesController {
   //   return this.rafflesService.scrapInfo();
   // }
 
+  // 내가 참여한 응모 정보 가져오기
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/userRaffle')
+  async getUserRaffle(@UserInfo() user: User) {
+    console.log('controller');
+    return await this.rafflesService.getUserRaffle(user.id);
+  }
+
   // 모든 응모 정보에서 하나 클릭하면 상세 조회
   @Get('/:shoeCode')
   async getRaffle(@Param('shoeCode') shoeCode: string) {

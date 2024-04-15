@@ -147,6 +147,7 @@ describe('UserService', () => {
       const result = await service.login('test@example.com', 'password');
 
       // 예상 결과를 확인합니다.
+      expect(result.userId).toEqual(mockUser.id);
       expect(result.message).toEqual('로그인 되었습니다'); // 로그인 성공 메시지를 확인합니다.
       expect(result.access_token).toBeDefined(); // 접근 토큰이 정의되어 있는지 확인합니다.
       expect(result.refresh_token).toBeDefined(); // 리프레시 토큰이 정의되어 있는지 확인합니다.

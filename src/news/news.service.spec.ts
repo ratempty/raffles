@@ -181,6 +181,7 @@ describe('NewsService', () => {
     // 기대한 결과와 실제 결과 비교
     expect(result).toEqual(
       mockNewsData.map((item) => ({
+        id: item.id,
         title: item.title,
         subTitle: item.subTitle,
         newsImg: item.newsImg,

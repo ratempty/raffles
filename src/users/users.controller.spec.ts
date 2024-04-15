@@ -60,6 +60,7 @@ describe('UserController', () => {
   it('로그인을 처리해야 합니다', async () => {
     // 로그인 로직의 결과를 설정합니다.
     const result = {
+      userId: 1,
       message: '로그인 성공',
       access_token: 'someToken',
       refresh_token: 'someRefreshToken',
