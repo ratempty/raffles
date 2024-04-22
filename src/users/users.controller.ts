@@ -29,6 +29,7 @@ export class UserController {
     private readonly userService: UserService,
     // private readonly userRaffleRepository: UserRaffleRepository,
   ) {}
+
   //회원가입
   @Post('register')
   async register(@Body() RegisterDto: RegisterDto) {

@@ -21,6 +21,8 @@ import { AuthModule } from './auth/auth.module';
 
 import { ScheduleModule } from '@nestjs/schedule';
 import { OauthModule } from './oauth/oauth.module';
+
+import { EmailModule } from './email/email.module';
 import { SearchModule } from './search/search.module';
 
 const typeOrmModuleOptions = {
@@ -64,6 +66,7 @@ const typeOrmModuleOptions = {
     ScheduleModule.forRoot(),
     OauthModule,
     SearchModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -15,6 +15,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRaffle } from '../raffles/entities/userRaffle.entity';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class UserService {
@@ -24,6 +25,7 @@ export class UserService {
     @InjectRepository(UserRaffle)
     private userRaffleRepository: Repository<UserRaffle>,
     private readonly jwtService: JwtService,
+    private readonly emailService: EmailService,
   ) {}
 
   // 회원가입 메소드
@@ -53,13 +55,22 @@ export class UserService {
     const hashedPassword = await hash(password, 10);
 
     // 사용자 정보 저장
-    await this.userRepository.save({
+    const newUser = await this.userRepository.save({
       email,
       password: hashedPassword,
-      passwordConfirm: hashedPassword,
       nickName,
       name,
     });
+
+    // 회원가입 후 이메일 인증 코드 발송
+    await this.emailService.sendVerificationEmail(email);
+
+    // 회원가입 성공 메시지 반환
+    return {
+      message:
+        '회원가입이 성공적으로 완료되었습니다. 이메일로 전송된 인증 코드를 확인하세요.',
+      user: newUser,
+    };
   }
 
   // 로그인 메소드

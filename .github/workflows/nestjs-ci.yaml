@@ -2,7 +2,7 @@ name: Nestjs CI
 
 on:
   push:
-    branches: [dev]
+    branches: [feat/login]
   pull_request:
     branches: [dev]
 
@@ -81,6 +81,9 @@ jobs:
             echo "ES_PASSWORD=${{ secrets.ES_PASSWORD }}" >> .env
             echo "KAKAO_REST_API_KEY=${{ secrets.KAKAO_REST_API_KEY }}" >> .env
             echo "KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }}" >> .env
+            echo "EMAIL_USER=${{ secrets.EMAIL_USER }}" >> .env
+            echo "EMAIL_PASS=${{ secrets.EMAIL_PASS }}" >> .env
+
 
 
             # node 관련 환경 설정 가져오기 위해 실행
