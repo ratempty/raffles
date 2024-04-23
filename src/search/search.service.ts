@@ -7,11 +7,15 @@ export class SearchService {
   async search(query: string) {
     try {
       const { body } = await this.esService.search({
-        index: 'raffles',
+        index: ['raffles', 'shoes', 'news'],
         body: {
           query: {
-            match_phrase: {
-              subName: query,
+            bool: {
+              should: [
+                { match_phrase: { name: { query, boost: 1.5 } } },
+                { match_phrase: { name: { query, boost: 1.0 } } },
+                { match_phrase: { title: { query, boost: 0.5 } } },
+              ],
             },
           },
         },
