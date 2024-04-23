@@ -2,9 +2,9 @@ name: Nestjs CI
 
 on:
   push:
-    branches: [feat/login]
-  pull_request:
     branches: [dev]
+  pull_request:
+    branches: [feat/login]
 
 jobs:
   lint:
