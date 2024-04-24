@@ -92,25 +92,25 @@ jobs:
           REGISTRY: ${{ secrets.ECR_REGISTRY }}
           REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
           IMAGE_TAG: ${{ secrets.IMAGE_TAG }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          DB_SYNC: ${{ secrets.DB_SYNC }}
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-          ES_ENDPOINT: ${{ secrets.ES_ENDPOINT }}
-          ES_USERNAME: ${{ secrets.ES_USERNAME }}
-          ES_PASSWORD: ${{ secrets.ES_PASSWORD }}
-          KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
-          KAKAO_REDIRECT_URI: ${{ secrets.KAKAO_REDIRECT_URI }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
-          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
 
         run: |
-          docker build -t $REPOSITORY .
+          docker build --build-arg DB_HOST=${{ env.DB_HOST }} \
+          --build-arg DB_PORT=${{ env.DB_PORT }} \
+          --build-arg DB_USERNAME=${{ env.DB_USERNAME }} \
+          --build-arg DB_PASSWORD=${{ env.DB_PASSWORD }} \
+          --build-arg DB_NAME=${{ env.DB_NAME }} \
+          --build-arg DB_SYNC=${{ env.DB_SYNC }} \
+          --build-arg JWT_SECRET_KEY=${{ env.JWT_SECRET_KEY }} \
+          --build-arg ES_ENDPOINT=${{ env.ES_ENDPOINT }} \
+          --build-arg ES_USERNAME=${{ env.ES_USERNAME }} \
+          --build-arg ES_PASSWORD=${{ env.ES_PASSWORD }} \
+          --build-arg KAKAO_REST_API_KEY=${{ env.KAKAO_REST_API_KEY }} \
+          --build-arg KAKAO_REDIRECT_URI=${{ env.KAKAO_REDIRECT_URI }} \
+          --build-arg AWS_REGION=${{ env.AWS_REGION }} \
+          --build-arg AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }} \
+          --build-arg S3_BUCKET_NAME=${{ env.S3_BUCKET_NAME }} \
+          --build-arg AWS_SECRET_KEY=${{ env.AWS_SECRET_KEY }} \
+            -t $REPOSITORY .
           docker tag $REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
