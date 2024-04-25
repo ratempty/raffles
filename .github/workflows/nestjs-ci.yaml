@@ -74,23 +74,7 @@ jobs:
           IMAGE_TAG: ${{ secrets.IMAGE_TAG }}
 
         run: |
-          docker build --build-arg DB_HOST=${{ env.DB_HOST }} \
-          --build-arg DB_PORT=${{ env.DB_PORT }} \
-          --build-arg DB_USERNAME=${{ env.DB_USERNAME }} \
-          --build-arg DB_PASSWORD=${{ env.DB_PASSWORD }} \
-          --build-arg DB_NAME=${{ env.DB_NAME }} \
-          --build-arg DB_SYNC=${{ env.DB_SYNC }} \
-          --build-arg JWT_SECRET_KEY=${{ env.JWT_SECRET_KEY }} \
-          --build-arg ES_ENDPOINT=${{ env.ES_ENDPOINT }} \
-          --build-arg ES_USERNAME=${{ env.ES_USERNAME }} \
-          --build-arg ES_PASSWORD=${{ env.ES_PASSWORD }} \
-          --build-arg KAKAO_REST_API_KEY=${{ env.KAKAO_REST_API_KEY }} \
-          --build-arg KAKAO_REDIRECT_URI=${{ env.KAKAO_REDIRECT_URI }} \
-          --build-arg AWS_REGION=${{ env.AWS_REGION }} \
-          --build-arg AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }} \
-          --build-arg S3_BUCKET_NAME=${{ env.S3_BUCKET_NAME }} \
-          --build-arg AWS_SECRET_KEY=${{ env.AWS_SECRET_KEY }} \
-            -t $REPOSITORY .
+          docker build -t $REPOSITORY .
           docker tag $REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
