@@ -44,7 +44,7 @@
     "@types/papaparse": "^5.3.14",
     "@types/passport-jwt": "^4.0.1",
     "@types/puppeteer": "^7.0.4",
-    "aws-sdk": "^2.1597.0",
+    "aws-sdk": "^2.1600.0",
     "axios": "^1.6.8",
     "axios-mock-adapter": "^1.22.0",
     "bcrypt": "^5.1.1",

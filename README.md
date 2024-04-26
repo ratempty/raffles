@@ -1,73 +1,128 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+<br>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+#### 🧑🏾‍💻 작업 로그 : [Notion](https://teamsparta.notion.site/696c0f382eea43419210446ad3fa374a)
+#### 📹 소개 영상 : [youtube]()
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+-------------------
 
-## Description
+<br>
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+# 📝 Intro
 
-## Installation
+* **프로젝트명** : 응모했슈
+* **기간** : 2024년 3월 26일 ~ 2024년 5월 2일
+* **주제** : 신발 응모 정보 및 뉴스 조회 & 개인간 신발 거래 시스템
 
-```bash
-$ npm install
-```
+<br>
 
-## Running the app
+# 👨‍👩‍👧‍👦Team Members
 
-```bash
-# development
-$ npm run start
+| Position      | Name          |    Github                                         | Tech Blog                               |
+|:--------------|:--------------|:--------------------------------------------------|-----------------------------------------|
+| Backend       | 강다빈        | [ratempty](https://github.com/ratempty)           |https://rate-allempty.tistory.com/       |
+| Backend       | 이재헌        | [wogjs5656](https://github.com/wogjs5656)         |https://jaehoring.tistory.com/           |
+| Backend       | 최인철        | [IncheolChoi](https://github.com/IncheolChoi)     |https://cic96.tistory.com/               |
+| Backend       | 김유진        | [yujinkim0930](https://github.com/yujinkim09309)  |https://velog.io/@yujin3009              |
 
-# watch mode
-$ npm run start:dev
+<br>
 
-# production mode
-$ npm run start:prod
-```
+# ⚒ Tech Stack
 
-## Test
+<br>
 
-```bash
-# unit tests
-$ npm run test
+|분류|기술|분류|기술|
+| :-: | :-: | :-: | :-: |
+|Runtime|Node.js|Language|TypeScript|
+|Framework|Nest.js |DB|MySQL(AWS RDS)|
+|Web Crawling|Axios, Cheerio , puppeteer|CI/CD|Docker, Github Action|
+|DevOps| AWS EC2,elasticsearch|Frontend|html|
 
-# e2e tests
-$ npm run test:e2e
+ 
+<br>
 
-# test coverage
-$ npm run test:cov
-```
+#  📒 ERD
 
-## Support
+![image](https://github.com/ratempty/raffles/assets/138560050/7f00bc8d-1540-42fb-9aea-850dfd955d6b)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
+<br>
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# 🕸 Architecture
 
-## License
 
-Nest is [MIT licensed](LICENSE).
+![raffles-service-arch drawio](https://github.com/ratempty/raffles/assets/138560050/1ab94fc7-f06d-48af-a1c9-553b09a38748)
+
+  
+
+<br>
+
+# 📝Commit Convention
+
+<details>
+<summary> Commit Convention 펼쳐보기 </summary>
+<div markdown="1">  
+  <br>
+제목은 최대 50글자가 넘지 않도록 하고 마침표 및 특수기호는 사용하지 않는다.
+
+ 
+영문으로 표기하는 경우 동사(원형)를 가장 앞에 두고 첫 글자는 대문자로 표기한다.(과거 시제를 사용하지 않는다.)
+ 
+제목은 **개조식 구문**으로 작성한다. --> 완전한 서술형 문장이 아니라, 간결하고 요점적인 서술을 의미.
+
+<br><br>
+
+> **타입은 태그와 제목으로 구성되고, 태그는 영어로 쓰되 첫 문자는 대문자로 한다.**
+> 
+> 
+> **`태그 : 제목`의 형태이며, `:`뒤에만 space가 있음**
+> 
+- `Feat` : 새로운 기능 추가
+- `Fix` : 버그 수정
+- `Docs` : 문서 수정
+- `Style` : 코드 포맷팅, 세미콜론 누락, 코드 변경이 없는 경우
+- `Refactor` : 코드 리펙토링
+- `Test` : 테스트 코드, 리펙토링 테스트 코드 추가
+- `Chore` : 빌드 업무 수정, 패키지 매니저 수정
+</div>
+</details>
+
+<br><br>
+
+# 🗒️Code Convention
+
+<details>
+<summary> Code Convention 펼쳐보기 </summary>
+<div markdown="1">  
+  <br>
+
+{<br>
+  "trailingComma": "all",<br>
+  "tabWidth": 2,<br>
+  "semi": true,<br>
+  "singleQuote": true<br>
+}
+
+ 
+</div>
+</details>
+<br><br><br>
+
+
+![header](https://capsule-render.vercel.app/api?type=waving&color=auto&height=200&section=header&text=Thank%20you%20for%20watching&fontSize=50)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
