@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { functions } from 'lodash';
 
 @Injectable()
 export class SearchService {
@@ -7,11 +8,25 @@ export class SearchService {
   async search(query: string) {
     try {
       const { body } = await this.esService.search({
-        index: 'raffles',
+        index: ['raffles', 'shoes', 'news'],
         body: {
+          size: 10000,
           query: {
-            match_phrase: {
-              subName: query,
+            function_score: {
+              query: {
+                multi_match: {
+                  query: query,
+                  fields: ['subName^6', 'name^2', 'title'],
+                  fuzziness: 'AUTO',
+                  operator: 'AND',
+                },
+              },
+              functions: [
+                { filter: { match: { category: 'raffles' } }, weight: 10 },
+                { filter: { match: { category: 'shoes' } }, weight: 1 },
+                { filter: { match: { category: 'news' } }, weight: 1 },
+              ],
+              score_mode: 'sum',
             },
           },
         },
