@@ -8,6 +8,8 @@ import {
   Delete,
   Query,
   UseGuards,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { MarketsService } from './markets.service';
 import { CreateMarketDto } from './dto/create-market.dto';
@@ -15,10 +17,15 @@ import { AuthGuard } from '@nestjs/passport';
 import { UpdateMarketDto } from './dto/update-market.dto';
 import { UserInfo } from 'src/users/utils/userInfo.decorator';
 import { User } from 'src/users/entities/user.entity';
+import { S3Service } from 'src/s3/s3.service';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('markets')
 export class MarketsController {
-  constructor(private readonly marketsService: MarketsService) {}
+  constructor(
+    private readonly marketsService: MarketsService,
+    private readonly s3Service: S3Service,
+  ) {}
 
   //신발 데이터 요청
   // @Post('shoes/save')
@@ -34,12 +41,26 @@ export class MarketsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post(':shoesId')
+  @UseInterceptors(FilesInterceptor('imgUrl', 5))
   async createMarket(
     @Body() createMarketDto: CreateMarketDto,
+    @UploadedFiles() files: Express.Multer.File[],
     @UserInfo() user: User,
     @Param('shoesId') shoesId: string,
   ) {
-    await this.marketsService.createMarket(user.id, +shoesId, createMarketDto);
+    const imgurl = [];
+    await Promise.all(
+      files.map(async (file: Express.Multer.File) => {
+        const key = await this.s3Service.uploadImage(file);
+        imgurl.push(key);
+      }),
+    );
+    await this.marketsService.createMarket(
+      user.id,
+      +shoesId,
+      createMarketDto,
+      imgurl,
+    );
     return { message: '판매글이 작성되었습니다.' };
   }
 

@@ -6,97 +6,75 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { UserRaffle } from '../raffles/entities/userRaffle.entity';
 import { HttpModule } from '@nestjs/axios';
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  NotFoundException,
+  UnauthorizedException,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { EmailService } from '../email/email.service'; // EmailService를 임포트합니다.
 
 jest.mock('bcrypt', () => ({
-  ...jest.requireActual('bcrypt'), // 실제 bcrypt 함수를 사용하기 위해 남은 함수들을 포함시킵니다.
-  compare: jest.fn(), // compare 함수만을 모킹합니다.
+  ...jest.requireActual('bcrypt'),
+  compare: jest.fn(),
 }));
 
 describe('UserService', () => {
-  let service: UserService; // UserService 인스턴스를 저장할 변수
-  let userRepository: Repository<User>; // User 리포지토리를 저장할 변수
-  let userRaffleRepository: Repository<UserRaffle>; // UserRaffle 리포지토리를 저장할 변수
+  let service: UserService;
+  let userRepository: Repository<User>;
+  let userRaffleRepository: Repository<UserRaffle>;
 
   beforeEach(async () => {
-    // 테스트 모듈 설정
     const module: TestingModule = await Test.createTestingModule({
-      imports: [HttpModule], // HttpModule을 임포트합니다.
+      imports: [HttpModule],
       providers: [
-        UserService, // UserService를 제공합니다.
+        UserService,
         {
-          provide: JwtService, // JwtService 제공자를 설정합니다.
+          provide: JwtService,
           useValue: {
-            sign: jest.fn(() => 'mockedToken'), // sign 메소드를 모킹하여 'mockedToken'을 반환하도록 설정합니다.
+            sign: jest.fn(() => 'mockedToken'),
           },
         },
         {
-          provide: getRepositoryToken(User), // User 리포지토리 제공자를 설정합니다.
-          useClass: Repository, // User 리포지토리를 Repository 클래스로 대체하여 제공합니다.
+          provide: getRepositoryToken(User),
+          useClass: Repository,
         },
         {
-          provide: getRepositoryToken(UserRaffle), // UserRaffle 리포지토리 제공자를 설정합니다.
-          useClass: Repository, // UserRaffle 리포지토리를 Repository 클래스로 대체하여 제공합니다.
+          provide: getRepositoryToken(UserRaffle),
+          useClass: Repository,
+        },
+        {
+          provide: EmailService, // EmailService 제공자를 설정합니다.
+          useValue: {
+            sendVerificationEmail: jest.fn(), // sendVerificationEmail 메소드를 모킹합니다.
+          },
         },
       ],
-    }).compile(); // 테스트 모듈을 컴파일합니다.
+    }).compile();
 
-    // 테스트 모듈에서 UserService, UserRepository 및 UserRaffleRepository의 인스턴스를 가져와 변수에 할당합니다.
     service = module.get<UserService>(UserService);
     userRepository = module.get<Repository<User>>(getRepositoryToken(User));
     userRaffleRepository = module.get<Repository<UserRaffle>>(
       getRepositoryToken(UserRaffle),
     );
 
-    // userRepository의 메소드들을 모킹합니다.
-    userRepository.findOne = jest.fn(); // findOne 메소드를 모킹합니다.
-    userRepository.findOneBy = jest.fn(); // findOneBy 메소드를 모킹합니다.
-    userRepository.create = jest.fn().mockImplementation((user) => user); // create 메소드를 모킹합니다.
-
-    // userRaffleRepository의 메소드들을 모킹합니다.
-    userRaffleRepository.find = jest.fn(); // find 메소드를 모킹합니다.
-    // 필요에 따라 userRaffleRepository의 다른 메소드들도 모킹할 수 있습니다.
+    userRepository.findOne = jest.fn();
+    userRepository.findOneBy = jest.fn();
+    userRepository.create = jest.fn().mockImplementation((user) => user);
+    userRaffleRepository.find = jest.fn();
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined(); // UserService가 정의되어 있는지 확인합니다.
+    expect(service).toBeDefined();
   });
 
   describe('register', () => {
-    it('should register a new user', async () => {
-      const registerSpy = jest
-        .spyOn(service, 'register') // register 메소드를 spyOn하여 호출 여부를 추적합니다.
-        .mockResolvedValueOnce(); // register 메소드가 호출되면 해결된 프로미스를 반환하도록 설정합니다.
-
-      // register 메소드를 호출하고, 예외가 발생하지 않는지 확인합니다.
-      await expect(
-        service.register(
-          'test@example.com',
-          'password',
-          'password',
-          'testNickname',
-          'Test User',
-        ),
-      ).resolves.not.toThrow();
-
-      // register 메소드가 주어진 인수로 호출되었는지 확인합니다.
-      expect(registerSpy).toHaveBeenCalledWith(
-        'test@example.com',
-        'password',
-        'password',
-        'testNickname',
-        'Test User',
-      );
-    });
-
     it('should throw ConflictException if user with given email already exists', async () => {
-      // userRepository.findOneBy를 모킹하여 주어진 이메일로 이미 가입된 사용자를 반환하도록 설정합니다.
       userRepository.findOneBy = jest
         .fn()
         .mockResolvedValueOnce({ email: 'test@example.com' });
 
-      // register 메소드를 호출하고, ConflictException 예외가 발생하는지 확인합니다.
       await expect(
         service.register(
           'test@example.com',
@@ -105,20 +83,19 @@ describe('UserService', () => {
           'testNickname',
           'Test User',
         ),
-      ).rejects.toThrow('이미 해당 이메일로 가입된 사용자가 있습니다!');
+      ).rejects.toThrow(ConflictException);
     });
 
     it('should throw BadRequestException if password and passwordConfirm do not match', async () => {
-      // register 메소드를 호출하고, BadRequestException 예외가 발생하는지 확인합니다.
       await expect(
         service.register(
           'test@example.com',
           'password',
-          'password2', // Different password for confirmation
+          'password2',
           'testNickname',
           'Test User',
         ),
-      ).rejects.toThrow('비밀번호와 비밀번호 확인이 일치하지 않습니다.');
+      ).rejects.toThrow(BadRequestException);
     });
   });
 

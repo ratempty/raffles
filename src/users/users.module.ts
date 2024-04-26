@@ -9,6 +9,7 @@ import { UserController } from './users.controller';
 import { UserService } from './users.service';
 import { Calendar } from 'src/calendars/entities/calendar.entity';
 import { UserRaffle } from 'src/raffles/entities/userRaffle.entity';
+import { EmailService } from 'src/email/email.service';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { UserRaffle } from 'src/raffles/entities/userRaffle.entity';
     }),
     TypeOrmModule.forFeature([User, Calendar, UserRaffle]),
   ],
-  providers: [UserService],
+  providers: [UserService, EmailService],
   controllers: [UserController],
   exports: [UserService],
 })
