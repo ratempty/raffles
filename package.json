@@ -43,6 +43,7 @@
     "@types/papaparse": "^5.3.14",
     "@types/passport-jwt": "^4.0.1",
     "@types/puppeteer": "^7.0.4",
+    "artillery": "^2.0.10",
     "aws-sdk": "^2.1597.0",
     "axios": "^1.6.8",
     "axios-mock-adapter": "^1.22.0",
@@ -68,6 +69,7 @@
     "typeorm-naming-strategies": "^4.1.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",

@@ -296,12 +296,8 @@ export class RafflesService {
     }
 
     for (let i = 0; i < productInfos.length; i++) {
-      try {
-        for (let infos of productInfos[i]) {
-          await this.raffleRepository.save(infos);
-        }
-      } catch (error) {
-        console.log('catchError :', error);
+      for (let infos of productInfos[i]) {
+        await this.raffleRepository.save(infos);
       }
     }
     return productInfos;

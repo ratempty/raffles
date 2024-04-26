@@ -695,20 +695,4 @@ describe('rafflesService', () => {
 
     jest.restoreAllMocks();
   });
-
-  it('error during saving raffles', async () => {
-    const mockError = new Error('save fail');
-    const productIdArr = [123, 456, 789];
-
-    jest.spyOn(raffleRepositoryMock, 'save').mockRejectedValue(mockError);
-
-    try {
-      await rafflesservice.scrapInfo(productIdArr);
-    } catch (error) {
-      expect(raffleRepositoryMock.save).toHaveBeenCalledTimes(
-        productIdArr.length,
-      );
-      expect(console.log).toHaveBeenCalledTimes(productIdArr.length);
-    }
-  });
 });
