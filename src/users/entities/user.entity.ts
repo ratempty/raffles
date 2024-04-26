@@ -3,7 +3,7 @@ import { Role } from '../types/userRole.type';
 import { Calendar } from '../../calendars/entities/calendar.entity';
 import { UserRaffle } from '../../raffles/entities/userRaffle.entity';
 import { Market } from '../../markets/entities/market.entity';
-
+import { Comment } from '../../comments/entities/comment.entity';
 @Entity({
   name: 'users',
 })
@@ -40,4 +40,7 @@ export class User {
 
   @OneToMany(() => Market, (market) => market.user)
   market: Market[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comment: Comment[];
 }

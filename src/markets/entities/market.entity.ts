@@ -3,8 +3,8 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -12,6 +12,7 @@ import { SaleStatus } from '../types/salesStatus.type';
 import { UseStatus } from '../types/useStatus.type';
 import { User } from '../../users/entities/user.entity';
 import { Shoes } from './shoes.entity';
+import { Comment } from '../../comments/entities/comment.entity';
 
 @Entity({
   name: 'markets',
@@ -63,4 +64,9 @@ export class Market {
 
   @Column({ type: 'bigint', name: 'shoesId' })
   shoesId: number;
+
+  @OneToMany(() => Comment, (comment) => comment.market, {
+    cascade: true,
+  })
+  comment: Comment;
 }
