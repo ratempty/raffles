@@ -38,7 +38,7 @@ export class CommentService {
     });
     return this.commentRepository.save(newComment);
   }
-  //댓글수정
+  //댓글수정aaa
   async updateComment(
     commentId: number,
     userId: number,
