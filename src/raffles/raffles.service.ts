@@ -22,7 +22,7 @@ export class RafflesService {
     private userRaffleRepository: Repository<UserRaffle>,
   ) {}
 
-  // 전체 응모 정보 조회
+  // 전체 응모 정보 조회   zzzzz
   async getRaffles() {
     const today = new Date();
     const startOfToday = new Date(
@@ -69,6 +69,7 @@ export class RafflesService {
       .getMany();
 
     const soonRaffles = willRaffles.map((willRaffle) => ({
+      id: willRaffle.id,
       subName: willRaffle.subName,
       brand: willRaffle.brand,
       imgUrl: willRaffle.imgUrl,
@@ -247,6 +248,18 @@ export class RafflesService {
               raffle.product.name.includes('셔츠') ||
               raffle.product.name.includes('캡') ||
               raffle.product.name.includes('티셔츠') ||
+              raffle.product.name.includes('삭스') ||
+              raffle.product.name.includes('반팔') ||
+              raffle.product.name.includes('지비츠') ||
+              raffle.product.name.includes('긴팔') ||
+              raffle.product.name.includes('팬티') ||
+              raffle.product.name.includes('이너웨어') ||
+              raffle.product.name.includes('속옷') ||
+              raffle.product.name.includes('슬리브') ||
+              raffle.product.name.includes('장갑') ||
+              raffle.product.name.includes('목걸이') ||
+              raffle.product.name.includes('귀걸이') ||
+              raffle.product.name.includes('선글라스') ||
               raffle.product.name.includes('팬츠'))
           );
 
@@ -283,13 +296,8 @@ export class RafflesService {
     }
 
     for (let i = 0; i < productInfos.length; i++) {
-      try {
-        for (let infos of productInfos[i]) {
-          await this.raffleRepository.save(infos);
-        }
-      } catch (error) {
-        console.log('count', i);
-        console.log('catchError :', error);
+      for (let infos of productInfos[i]) {
+        await this.raffleRepository.save(infos);
       }
     }
     return productInfos;
