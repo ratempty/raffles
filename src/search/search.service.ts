@@ -10,7 +10,7 @@ export class SearchService {
         index: 'raffles',
         body: {
           query: {
-            match: {
+            match_phrase: {
               subName: query,
             },
           },
@@ -21,6 +21,22 @@ export class SearchService {
     } catch (error) {
       console.error('ES Error:', error);
       throw error; // 에러 처리를 원하는 방식으로 수정하세요
+    }
+  }
+
+  async insertData(index: string, body: any) {
+    try {
+      const result = await this.esService.index({
+        index,
+        body,
+      });
+      console.log('indexed data: ', result);
+      console.log('인덱스드 데이터');
+      return result;
+    } catch (error) {
+      console.error('ES Error:', error.meta);
+      console.log('콘솔에러: ', console.error);
+      throw new Error();
     }
   }
 }
