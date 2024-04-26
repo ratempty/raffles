@@ -22,7 +22,7 @@ export class RafflesService {
     private userRaffleRepository: Repository<UserRaffle>,
   ) {}
 
-  // 전체 응모 정보 조회
+  // 전체 응모 정보 조회   zzzzz
   async getRaffles() {
     const today = new Date();
     const startOfToday = new Date(
