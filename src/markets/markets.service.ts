@@ -46,8 +46,12 @@ export class MarketsService {
     userId: number,
     shoesId: number,
     createMarketDto: CreateMarketDto,
+    imgUrl: string[],
   ) {
-    const { title, content, size, imgUrl, salesStatus, price, useStatus } =
+    if (imgUrl.length === 0) {
+      throw new BadRequestException({ message: '이미지를 추가해주세요.' });
+    }
+    const { title, content, size, salesStatus, price, useStatus } =
       createMarketDto;
     const view = 0;
     await this.marketsRepository.save({
