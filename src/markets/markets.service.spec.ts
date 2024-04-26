@@ -151,8 +151,9 @@ describe('MarketsService', () => {
       shoesId: 1,
       view: 0,
     };
+    const imgUrl = ['이미지1', '이미지2'];
     marketsRepositoryMock.save.mockResolvedValueOnce(market);
-    await service.createMarket(userId, shoesId, createMarketDto);
+    await service.createMarket(userId, shoesId, createMarketDto, imgUrl);
     expect(marketsRepositoryMock.save).toHaveBeenCalledWith({
       userId,
       shoesId,
@@ -160,7 +161,7 @@ describe('MarketsService', () => {
       content: createMarketDto.content,
       size: createMarketDto.size,
       view: 0,
-      imgUrl: createMarketDto.imgUrl,
+      imgUrl,
       salesStatus: createMarketDto.salesStatus,
       price: createMarketDto.price,
       useStatus: createMarketDto.useStatus,
