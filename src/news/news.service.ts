@@ -5,12 +5,14 @@ import { Repository } from 'typeorm';
 import axios, { all } from 'axios';
 import cheerioModule from 'cheerio';
 import puppeteer from 'puppeteer';
+import { SearchService } from 'src/search/search.service';
 
 @Injectable()
 export class NewsService {
   constructor(
     @InjectRepository(News)
     private newsRepository: Repository<News>,
+    private readonly searchService: SearchService,
   ) {}
   async getHTML() {
     const options = {

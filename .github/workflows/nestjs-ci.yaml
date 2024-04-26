@@ -1,8 +1,6 @@
 name: Nestjs CI
 
 on:
-  push:
-    branches: [dev]
   pull_request:
     branches: [dev]
 
@@ -47,43 +45,58 @@ jobs:
         run: npm test
 
   deploy:
-    needs: test
+    name: Deploy
     runs-on: ubuntu-latest
+    environment: production
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v2
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@master
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.PORT }}
-          script: |
-            # 프로젝트 디렉토리로 이동
-            cd /home/ubuntu/raffles
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} # 나의 ECR 정보
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-            # GitHub에서 최신 코드를 가져옴
-            git pull
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          REGISTRY: ${{ secrets.ECR_REGISTRY }}
+          REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ secrets.IMAGE_TAG }}
 
-            # .env 파일 생성
-            echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
-            echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
-            echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
-            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-            echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
-            echo "DB_SYNC=${{ secrets.DB_SYNC }}" >> .env
-            echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
-            echo "ES_ENDPOINT=${{ secrets.ES_ENDPOINT }}" >> .env
-            echo "ES_USERNAME=${{ secrets.ES_USERNAME }}" >> .env
-            echo "ES_PASSWORD=${{ secrets.ES_PASSWORD }}" >> .env
-            echo "KAKAO_REST_API_KEY=${{ secrets.KAKAO_REST_API_KEY }}" >> .env
-            echo "KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }}" >> .env
+        run: |
+          docker build -t $REPOSITORY .
+          docker tag $REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
+      - name: Get current time
+        uses: 1466587594/get-current-time@v2
+        id: current-time
+        with:
+          format: YYYYMMDD_HH-mm-ss
+          utcOffset: '+09:00'
 
-            # node 관련 환경 설정 가져오기 위해 실행
-            source /home/ubuntu/.nvm/nvm.sh
-            # 서버 실행 시크립트 가동!
-            source ./run.sh
+      - name: Generate deployment package
+        run: |
+          mkdir -p deploy
+          cp Dockerrun.aws.json deploy/Dockerrun.aws.json
+          cd deploy && zip -r deploy.zip .
+
+      - name: Beanstalk Deploy
+        uses: einaregilsson/beanstalk-deploy@v14
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
+          application_name: raffles-eb-app
+          environment_name: Raffles-eb-app-env
+          version_label: earth-docker-${{steps.current-time.outputs.formattedTime}}
+          region: ap-northeast-2
+          deployment_package: deploy/deploy.zip
+          wait_for_environment_recovery: 200

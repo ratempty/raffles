@@ -21,7 +21,11 @@ import { AuthModule } from './auth/auth.module';
 
 import { ScheduleModule } from '@nestjs/schedule';
 import { OauthModule } from './oauth/oauth.module';
+
+import { EmailModule } from './email/email.module';
 import { SearchModule } from './search/search.module';
+import { CommentsModule } from './comments/comments.module';
+import { Comment } from './comments/entities/comment.entity';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -33,7 +37,16 @@ const typeOrmModuleOptions = {
     host: configService.get('DB_HOST'),
     port: configService.get('DB_PORT'),
     database: configService.get('DB_NAME'),
-    entities: [User, Market, News, Raffle, UserRaffle, Calendar, Shoes],
+    entities: [
+      User,
+      Market,
+      News,
+      Raffle,
+      UserRaffle,
+      Calendar,
+      Shoes,
+      Comment,
+    ],
     synchronize: configService.get('DB_SYNC'),
     logging: true,
   }),
@@ -64,6 +77,8 @@ const typeOrmModuleOptions = {
     ScheduleModule.forRoot(),
     OauthModule,
     SearchModule,
+    EmailModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
