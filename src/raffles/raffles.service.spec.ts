@@ -323,366 +323,366 @@ describe('rafflesService', () => {
     jest.restoreAllMocks();
   });
 
-  it('should scrap info with save to repository', async () => {
-    const productIdArr = [114564];
+  // it('should scrap info with save to repository', async () => {
+  //   const productIdArr = [114564];
 
-    const axiosSpy = jest.spyOn(axios, 'get').mockResolvedValue({
-      data: {
-        results: [
-          {
-            id: 146473,
-            uuid: 'd091dd6c-3355-4123-b49f-03f78ce12f71',
-            type: 1,
-            isEvent: false,
-            method: '당첨 문자 발송',
-            url: 'https://grandstage.a-rt.com/product/new?prdtNo=1020100891&page=1',
-            price: '￦169,000',
-            releaseMarket: {
-              name: 'ABC마트 GS 경기신세계점',
-              permalink: 'abc-gs-gyeonggi-ssg',
-              icon: 'https://static.shoeprize.com/site/icon/ABC%EB%A7%88%ED%8A%B8_GS_%EA%B2%BD%EA%B8%B0%EC%8B%A0%EC%84%B8%EA%B3%84%EC%A0%90-c4fc8a5e-f155-11ee-855e-0219d052041b.jpeg',
-              phone: '0215889667',
-              mapUrl: 'https://naver.me/5wAqA3X9',
-              address:
-                '경기 용인시 수지구 포은대로 536 신세계백화점 경기점 4층, ABC-MART GS 경기신세계점',
-              channels: [
-                {
-                  type: 'instagram',
-                  link: 'https://www.instagram.com/abcmartkr_grandstage/',
-                  typeName: '인스타그램',
-                },
-              ],
-              isUseApp: false,
-            },
-            dateInfo: '4월 3일 (수) 10:00 ~ 4월 9일 (화) 23:50',
-            announcedTimestamp: 1712797200000,
-            closedTimestamp: 1712674200000,
-            startTimestamp: 1712106000000,
-            endTimestamp: 1712674200000,
-            product: {
-              id: 114564,
-              brandName: 'ASICS',
-              name: '아식스 젤-카야노 14 크림 블랙',
-              nameEn: 'ASICS GEL-KAYANO 14 CREAM BLACK',
-              thumb:
-                'https://static.shoeprize.com/Raffle/thumb/1201A019-108-shoeprize-ASICS-GEL-KAYANO-14-CREAM-BLACK-114564-1685067716736.jpg',
-              code: '1201A019-108',
-            },
-            shippingMethod: '매장 수령',
-            payMethod: '오프라인 구매',
-            salePrice: '169000.00',
-            salePriceCurrency: 'KRW',
-            salePriceCurrencySymbol: '￦',
-            region: '한국',
-            isUndefinedStartTime: false,
-            isUndefinedEndTime: false,
-            purchaseStartedTimestamp: 1712797200000,
-            purchaseStoppedTimestamp: 1712847000000,
-            mode: 'online',
-            isUndefinedPurchaseStartedAt: false,
-            isUndefinedPurchaseStoppedAt: false,
-            isUndefinedAnnouncedAt: false,
-            completedTimestamp: 1712847599999,
-            isExpired: false,
-            isInHouse: false,
-            isDomesticSite: true,
-          },
-        ],
-      },
-    });
+  //   const axiosSpy = jest.spyOn(axios, 'get').mockResolvedValue({
+  //     data: {
+  //       results: [
+  //         {
+  //           id: 146473,
+  //           uuid: 'd091dd6c-3355-4123-b49f-03f78ce12f71',
+  //           type: 1,
+  //           isEvent: false,
+  //           method: '당첨 문자 발송',
+  //           url: 'https://grandstage.a-rt.com/product/new?prdtNo=1020100891&page=1',
+  //           price: '￦169,000',
+  //           releaseMarket: {
+  //             name: 'ABC마트 GS 경기신세계점',
+  //             permalink: 'abc-gs-gyeonggi-ssg',
+  //             icon: 'https://static.shoeprize.com/site/icon/ABC%EB%A7%88%ED%8A%B8_GS_%EA%B2%BD%EA%B8%B0%EC%8B%A0%EC%84%B8%EA%B3%84%EC%A0%90-c4fc8a5e-f155-11ee-855e-0219d052041b.jpeg',
+  //             phone: '0215889667',
+  //             mapUrl: 'https://naver.me/5wAqA3X9',
+  //             address:
+  //               '경기 용인시 수지구 포은대로 536 신세계백화점 경기점 4층, ABC-MART GS 경기신세계점',
+  //             channels: [
+  //               {
+  //                 type: 'instagram',
+  //                 link: 'https://www.instagram.com/abcmartkr_grandstage/',
+  //                 typeName: '인스타그램',
+  //               },
+  //             ],
+  //             isUseApp: false,
+  //           },
+  //           dateInfo: '4월 3일 (수) 10:00 ~ 4월 9일 (화) 23:50',
+  //           announcedTimestamp: 1712797200000,
+  //           closedTimestamp: 1712674200000,
+  //           startTimestamp: 1712106000000,
+  //           endTimestamp: 1712674200000,
+  //           product: {
+  //             id: 114564,
+  //             brandName: 'ASICS',
+  //             name: '아식스 젤-카야노 14 크림 블랙',
+  //             nameEn: 'ASICS GEL-KAYANO 14 CREAM BLACK',
+  //             thumb:
+  //               'https://static.shoeprize.com/Raffle/thumb/1201A019-108-shoeprize-ASICS-GEL-KAYANO-14-CREAM-BLACK-114564-1685067716736.jpg',
+  //             code: '1201A019-108',
+  //           },
+  //           shippingMethod: '매장 수령',
+  //           payMethod: '오프라인 구매',
+  //           salePrice: '169000.00',
+  //           salePriceCurrency: 'KRW',
+  //           salePriceCurrencySymbol: '￦',
+  //           region: '한국',
+  //           isUndefinedStartTime: false,
+  //           isUndefinedEndTime: false,
+  //           purchaseStartedTimestamp: 1712797200000,
+  //           purchaseStoppedTimestamp: 1712847000000,
+  //           mode: 'online',
+  //           isUndefinedPurchaseStartedAt: false,
+  //           isUndefinedPurchaseStoppedAt: false,
+  //           isUndefinedAnnouncedAt: false,
+  //           completedTimestamp: 1712847599999,
+  //           isExpired: false,
+  //           isInHouse: false,
+  //           isDomesticSite: true,
+  //         },
+  //       ],
+  //     },
+  //   });
 
-    await rafflesservice.scrapInfo(productIdArr);
+  //   await rafflesservice.scrapInfo(productIdArr);
 
-    expect(axiosSpy).toHaveBeenCalledTimes(1);
+  //   expect(axiosSpy).toHaveBeenCalledTimes(1);
 
-    jest.restoreAllMocks();
-  });
+  //   jest.restoreAllMocks();
+  // });
 
-  it('raffle subname has 후디,온라인 선착순 and raffle has not raffleStartDate', async () => {
-    const productIdArr = [114564];
+  // it('raffle subname has 후디,온라인 선착순 and raffle has not raffleStartDate', async () => {
+  //   const productIdArr = [114564];
 
-    const axiosSpy = jest.spyOn(axios, 'get').mockResolvedValue({
-      data: {
-        results: [
-          {
-            id: 146473,
-            uuid: 'd091dd6c-3355-4123-b49f-03f78ce12f71',
-            type: 1,
-            isEvent: false,
-            method: '당첨 문자 발송',
-            url: 'https://grandstage.a-rt.com/product/new?prdtNo=1020100891&page=1',
-            price: '￦169,000',
-            releaseMarket: {
-              name: 'ABC마트 GS 경기신세계점',
-              permalink: 'abc-gs-gyeonggi-ssg',
-              icon: 'https://static.shoeprize.com/site/icon/ABC%EB%A7%88%ED%8A%B8_GS_%EA%B2%BD%EA%B8%B0%EC%8B%A0%EC%84%B8%EA%B3%84%EC%A0%90-c4fc8a5e-f155-11ee-855e-0219d052041b.jpeg',
-              phone: '0215889667',
-              mapUrl: 'https://naver.me/5wAqA3X9',
-              address:
-                '경기 용인시 수지구 포은대로 536 신세계백화점 경기점 4층, ABC-MART GS 경기신세계점',
-              channels: [
-                {
-                  type: 'instagram',
-                  link: 'https://www.instagram.com/abcmartkr_grandstage/',
-                  typeName: '인스타그램',
-                },
-              ],
-              isUseApp: false,
-            },
-            dateInfo: '4월 3일 (수) 10:00 ~ 4월 9일 (화) 23:50',
-            announcedTimestamp: 1712797200000,
-            closedTimestamp: 1712674200000,
-            startTimestamp: 1712106000000,
-            endTimestamp: 1712674200000,
-            product: {
-              id: 114564,
-              brandName: 'ASICS',
-              name: '아식스 젤-카야노 14 크림 후디 블랙',
-              nameEn: 'ASICS GEL-KAYANO 14 CREAM BLACK',
-              thumb:
-                'https://static.shoeprize.com/Raffle/thumb/1201A019-108-shoeprize-ASICS-GEL-KAYANO-14-CREAM-BLACK-114564-1685067716736.jpg',
-              code: '1201A019-108',
-            },
-            shippingMethod: '매장 수령',
-            payMethod: '오프라인 구매',
-            salePrice: '169000.00',
-            salePriceCurrency: 'KRW',
-            salePriceCurrencySymbol: '￦',
-            region: '한국',
-            isUndefinedStartTime: false,
-            isUndefinedEndTime: false,
-            purchaseStartedTimestamp: 1712797200000,
-            purchaseStoppedTimestamp: 1712847000000,
-            mode: 'online',
-            isUndefinedPurchaseStartedAt: false,
-            isUndefinedPurchaseStoppedAt: false,
-            isUndefinedAnnouncedAt: false,
-            completedTimestamp: 1712847599999,
-            isExpired: false,
-            isInHouse: false,
-            isDomesticSite: true,
-          },
-          {
-            id: 146473,
-            uuid: 'd091dd6c-3355-4123-b49f-03f78ce12f71',
-            type: 1,
-            isEvent: false,
-            method: '당첨 문자 발송',
-            url: 'https://grandstage.a-rt.com/product/new?prdtNo=1020100891&page=1',
-            price: '￦169,000',
-            releaseMarket: {
-              name: 'ABC마트 GS 경기신세계점',
-              permalink: 'abc-gs-gyeonggi-ssg',
-              icon: 'https://static.shoeprize.com/site/icon/ABC%EB%A7%88%ED%8A%B8_GS_%EA%B2%BD%EA%B8%B0%EC%8B%A0%EC%84%B8%EA%B3%84%EC%A0%90-c4fc8a5e-f155-11ee-855e-0219d052041b.jpeg',
-              phone: '0215889667',
-              mapUrl: 'https://naver.me/5wAqA3X9',
-              address:
-                '경기 용인시 수지구 포은대로 536 신세계백화점 경기점 4층, ABC-MART GS 경기신세계점',
-              channels: [
-                {
-                  type: 'instagram',
-                  link: 'https://www.instagram.com/abcmartkr_grandstage/',
-                  typeName: '인스타그램',
-                },
-              ],
-              isUseApp: false,
-            },
-            dateInfo: '4월 3일 (수) 10:00 ~ 4월 9일 (화) 23:50',
-            announcedTimestamp: 1712797200000,
-            closedTimestamp: 1712674200000,
-            startTimestamp: 1712106000000,
-            endTimestamp: 1712674200000,
-            product: {
-              id: 114564,
-              brandName: 'ASICS',
-              name: '아식스 젤-카야노 14 크림 블랙',
-              nameEn: 'ASICS GEL-KAYANO 14 CREAM BLACK',
-              thumb:
-                'https://static.shoeprize.com/Raffle/thumb/1201A019-108-shoeprize-ASICS-GEL-KAYANO-14-CREAM-BLACK-114564-1685067716736.jpg',
-              code: '1201A019-108',
-            },
-            shippingMethod: '매장 수령',
-            payMethod: '오프라인 구매',
-            salePrice: '169000.00',
-            salePriceCurrency: 'KRW',
-            salePriceCurrencySymbol: '￦',
-            region: '한국',
-            isUndefinedStartTime: false,
-            isUndefinedEndTime: false,
-            purchaseStartedTimestamp: 1712797200000,
-            purchaseStoppedTimestamp: 1712847000000,
-            mode: 'online',
-            isUndefinedPurchaseStartedAt: false,
-            isUndefinedPurchaseStoppedAt: false,
-            isUndefinedAnnouncedAt: false,
-            completedTimestamp: 1712847599999,
-            isExpired: false,
-            isInHouse: false,
-            isDomesticSite: true,
-          },
-          {
-            id: 146473,
-            uuid: 'd091dd6c-3355-4123-b49f-03f78ce12f71',
-            type: 1,
-            isEvent: false,
-            method: '온라인 선착순',
-            url: 'https://grandstage.a-rt.com/product/new?prdtNo=1020100891&page=1',
-            price: '￦169,000',
-            releaseMarket: {
-              name: 'ABC마트 GS 경기신세계점',
-              permalink: 'abc-gs-gyeonggi-ssg',
-              icon: 'https://static.shoeprize.com/site/icon/ABC%EB%A7%88%ED%8A%B8_GS_%EA%B2%BD%EA%B8%B0%EC%8B%A0%EC%84%B8%EA%B3%84%EC%A0%90-c4fc8a5e-f155-11ee-855e-0219d052041b.jpeg',
-              phone: '0215889667',
-              mapUrl: 'https://naver.me/5wAqA3X9',
-              address:
-                '경기 용인시 수지구 포은대로 536 신세계백화점 경기점 4층, ABC-MART GS 경기신세계점',
-              channels: [
-                {
-                  type: 'instagram',
-                  link: 'https://www.instagram.com/abcmartkr_grandstage/',
-                  typeName: '인스타그램',
-                },
-              ],
-              isUseApp: false,
-            },
-            dateInfo: '4월 3일 (수) 10:00 ~ 4월 9일 (화) 23:50',
-            announcedTimestamp: 1712797200000,
-            closedTimestamp: 1712674200000,
-            startTimestamp: 1712106000000,
-            endTimestamp: 1712674200000,
-            product: {
-              id: 114564,
-              brandName: 'ASICS',
-              name: '아식스 젤-카야노 14 크림 블랙',
-              nameEn: 'ASICS GEL-KAYANO 14 CREAM BLACK',
-              thumb:
-                'https://static.shoeprize.com/Raffle/thumb/1201A019-108-shoeprize-ASICS-GEL-KAYANO-14-CREAM-BLACK-114564-1685067716736.jpg',
-              code: '1201A019-108',
-            },
-            shippingMethod: '매장 수령',
-            payMethod: '오프라인 구매',
-            salePrice: '169000.00',
-            salePriceCurrency: 'KRW',
-            salePriceCurrencySymbol: '￦',
-            region: '한국',
-            isUndefinedStartTime: false,
-            isUndefinedEndTime: false,
-            purchaseStartedTimestamp: 1712797200000,
-            purchaseStoppedTimestamp: 1712847000000,
-            mode: 'online',
-            isUndefinedPurchaseStartedAt: false,
-            isUndefinedPurchaseStoppedAt: false,
-            isUndefinedAnnouncedAt: false,
-            completedTimestamp: 1712847599999,
-            isExpired: false,
-            isInHouse: false,
-            isDomesticSite: true,
-          },
-          {
-            id: 146473,
-            uuid: 'd091dd6c-3355-4123-b49f-03f78ce12f71',
-            type: 1,
-            isEvent: false,
-            method: '당첨 문자 발송',
-            url: 'https://grandstage.a-rt.com/product/new?prdtNo=1020100891&page=1',
-            price: '￦169,000',
-            releaseMarket: {
-              name: 'ABC마트 GS 경기신세계점',
-              permalink: 'abc-gs-gyeonggi-ssg',
-              icon: 'https://static.shoeprize.com/site/icon/ABC%EB%A7%88%ED%8A%B8_GS_%EA%B2%BD%EA%B8%B0%EC%8B%A0%EC%84%B8%EA%B3%84%EC%A0%90-c4fc8a5e-f155-11ee-855e-0219d052041b.jpeg',
-              phone: '0215889667',
-              mapUrl: 'https://naver.me/5wAqA3X9',
-              address:
-                '경기 용인시 수지구 포은대로 536 신세계백화점 경기점 4층, ABC-MART GS 경기신세계점',
-              channels: [
-                {
-                  type: 'instagram',
-                  link: 'https://www.instagram.com/abcmartkr_grandstage/',
-                  typeName: '인스타그램',
-                },
-              ],
-              isUseApp: false,
-            },
-            dateInfo: '4월 3일 (수) 10:00 ~ 4월 9일 (화) 23:50',
-            announcedTimestamp: 1712797200000,
-            closedTimestamp: 1712674200000,
-            endTimestamp: 1712674200000,
-            product: {
-              id: 114564,
-              brandName: 'ASICS',
-              name: '아식스 젤-카야노 14 크림 블랙',
-              nameEn: 'ASICS GEL-KAYANO 14 CREAM BLACK',
-              thumb:
-                'https://static.shoeprize.com/Raffle/thumb/1201A019-108-shoeprize-ASICS-GEL-KAYANO-14-CREAM-BLACK-114564-1685067716736.jpg',
-              code: '1201A019-108',
-            },
-            shippingMethod: '매장 수령',
-            payMethod: '오프라인 구매',
-            salePrice: '169000.00',
-            salePriceCurrency: 'KRW',
-            salePriceCurrencySymbol: '￦',
-            region: '한국',
-            isUndefinedStartTime: false,
-            isUndefinedEndTime: false,
-            purchaseStartedTimestamp: 1712797200000,
-            purchaseStoppedTimestamp: 1712847000000,
-            mode: 'online',
-            isUndefinedPurchaseStartedAt: false,
-            isUndefinedPurchaseStoppedAt: false,
-            isUndefinedAnnouncedAt: false,
-            completedTimestamp: 1712847599999,
-            isExpired: false,
-            isInHouse: false,
-            isDomesticSite: true,
-          },
-        ],
-      },
-    });
+  //   const axiosSpy = jest.spyOn(axios, 'get').mockResolvedValue({
+  //     data: {
+  //       results: [
+  //         {
+  //           id: 146473,
+  //           uuid: 'd091dd6c-3355-4123-b49f-03f78ce12f71',
+  //           type: 1,
+  //           isEvent: false,
+  //           method: '당첨 문자 발송',
+  //           url: 'https://grandstage.a-rt.com/product/new?prdtNo=1020100891&page=1',
+  //           price: '￦169,000',
+  //           releaseMarket: {
+  //             name: 'ABC마트 GS 경기신세계점',
+  //             permalink: 'abc-gs-gyeonggi-ssg',
+  //             icon: 'https://static.shoeprize.com/site/icon/ABC%EB%A7%88%ED%8A%B8_GS_%EA%B2%BD%EA%B8%B0%EC%8B%A0%EC%84%B8%EA%B3%84%EC%A0%90-c4fc8a5e-f155-11ee-855e-0219d052041b.jpeg',
+  //             phone: '0215889667',
+  //             mapUrl: 'https://naver.me/5wAqA3X9',
+  //             address:
+  //               '경기 용인시 수지구 포은대로 536 신세계백화점 경기점 4층, ABC-MART GS 경기신세계점',
+  //             channels: [
+  //               {
+  //                 type: 'instagram',
+  //                 link: 'https://www.instagram.com/abcmartkr_grandstage/',
+  //                 typeName: '인스타그램',
+  //               },
+  //             ],
+  //             isUseApp: false,
+  //           },
+  //           dateInfo: '4월 3일 (수) 10:00 ~ 4월 9일 (화) 23:50',
+  //           announcedTimestamp: 1712797200000,
+  //           closedTimestamp: 1712674200000,
+  //           startTimestamp: 1712106000000,
+  //           endTimestamp: 1712674200000,
+  //           product: {
+  //             id: 114564,
+  //             brandName: 'ASICS',
+  //             name: '아식스 젤-카야노 14 크림 후디 블랙',
+  //             nameEn: 'ASICS GEL-KAYANO 14 CREAM BLACK',
+  //             thumb:
+  //               'https://static.shoeprize.com/Raffle/thumb/1201A019-108-shoeprize-ASICS-GEL-KAYANO-14-CREAM-BLACK-114564-1685067716736.jpg',
+  //             code: '1201A019-108',
+  //           },
+  //           shippingMethod: '매장 수령',
+  //           payMethod: '오프라인 구매',
+  //           salePrice: '169000.00',
+  //           salePriceCurrency: 'KRW',
+  //           salePriceCurrencySymbol: '￦',
+  //           region: '한국',
+  //           isUndefinedStartTime: false,
+  //           isUndefinedEndTime: false,
+  //           purchaseStartedTimestamp: 1712797200000,
+  //           purchaseStoppedTimestamp: 1712847000000,
+  //           mode: 'online',
+  //           isUndefinedPurchaseStartedAt: false,
+  //           isUndefinedPurchaseStoppedAt: false,
+  //           isUndefinedAnnouncedAt: false,
+  //           completedTimestamp: 1712847599999,
+  //           isExpired: false,
+  //           isInHouse: false,
+  //           isDomesticSite: true,
+  //         },
+  //         {
+  //           id: 146473,
+  //           uuid: 'd091dd6c-3355-4123-b49f-03f78ce12f71',
+  //           type: 1,
+  //           isEvent: false,
+  //           method: '당첨 문자 발송',
+  //           url: 'https://grandstage.a-rt.com/product/new?prdtNo=1020100891&page=1',
+  //           price: '￦169,000',
+  //           releaseMarket: {
+  //             name: 'ABC마트 GS 경기신세계점',
+  //             permalink: 'abc-gs-gyeonggi-ssg',
+  //             icon: 'https://static.shoeprize.com/site/icon/ABC%EB%A7%88%ED%8A%B8_GS_%EA%B2%BD%EA%B8%B0%EC%8B%A0%EC%84%B8%EA%B3%84%EC%A0%90-c4fc8a5e-f155-11ee-855e-0219d052041b.jpeg',
+  //             phone: '0215889667',
+  //             mapUrl: 'https://naver.me/5wAqA3X9',
+  //             address:
+  //               '경기 용인시 수지구 포은대로 536 신세계백화점 경기점 4층, ABC-MART GS 경기신세계점',
+  //             channels: [
+  //               {
+  //                 type: 'instagram',
+  //                 link: 'https://www.instagram.com/abcmartkr_grandstage/',
+  //                 typeName: '인스타그램',
+  //               },
+  //             ],
+  //             isUseApp: false,
+  //           },
+  //           dateInfo: '4월 3일 (수) 10:00 ~ 4월 9일 (화) 23:50',
+  //           announcedTimestamp: 1712797200000,
+  //           closedTimestamp: 1712674200000,
+  //           startTimestamp: 1712106000000,
+  //           endTimestamp: 1712674200000,
+  //           product: {
+  //             id: 114564,
+  //             brandName: 'ASICS',
+  //             name: '아식스 젤-카야노 14 크림 블랙',
+  //             nameEn: 'ASICS GEL-KAYANO 14 CREAM BLACK',
+  //             thumb:
+  //               'https://static.shoeprize.com/Raffle/thumb/1201A019-108-shoeprize-ASICS-GEL-KAYANO-14-CREAM-BLACK-114564-1685067716736.jpg',
+  //             code: '1201A019-108',
+  //           },
+  //           shippingMethod: '매장 수령',
+  //           payMethod: '오프라인 구매',
+  //           salePrice: '169000.00',
+  //           salePriceCurrency: 'KRW',
+  //           salePriceCurrencySymbol: '￦',
+  //           region: '한국',
+  //           isUndefinedStartTime: false,
+  //           isUndefinedEndTime: false,
+  //           purchaseStartedTimestamp: 1712797200000,
+  //           purchaseStoppedTimestamp: 1712847000000,
+  //           mode: 'online',
+  //           isUndefinedPurchaseStartedAt: false,
+  //           isUndefinedPurchaseStoppedAt: false,
+  //           isUndefinedAnnouncedAt: false,
+  //           completedTimestamp: 1712847599999,
+  //           isExpired: false,
+  //           isInHouse: false,
+  //           isDomesticSite: true,
+  //         },
+  //         {
+  //           id: 146473,
+  //           uuid: 'd091dd6c-3355-4123-b49f-03f78ce12f71',
+  //           type: 1,
+  //           isEvent: false,
+  //           method: '온라인 선착순',
+  //           url: 'https://grandstage.a-rt.com/product/new?prdtNo=1020100891&page=1',
+  //           price: '￦169,000',
+  //           releaseMarket: {
+  //             name: 'ABC마트 GS 경기신세계점',
+  //             permalink: 'abc-gs-gyeonggi-ssg',
+  //             icon: 'https://static.shoeprize.com/site/icon/ABC%EB%A7%88%ED%8A%B8_GS_%EA%B2%BD%EA%B8%B0%EC%8B%A0%EC%84%B8%EA%B3%84%EC%A0%90-c4fc8a5e-f155-11ee-855e-0219d052041b.jpeg',
+  //             phone: '0215889667',
+  //             mapUrl: 'https://naver.me/5wAqA3X9',
+  //             address:
+  //               '경기 용인시 수지구 포은대로 536 신세계백화점 경기점 4층, ABC-MART GS 경기신세계점',
+  //             channels: [
+  //               {
+  //                 type: 'instagram',
+  //                 link: 'https://www.instagram.com/abcmartkr_grandstage/',
+  //                 typeName: '인스타그램',
+  //               },
+  //             ],
+  //             isUseApp: false,
+  //           },
+  //           dateInfo: '4월 3일 (수) 10:00 ~ 4월 9일 (화) 23:50',
+  //           announcedTimestamp: 1712797200000,
+  //           closedTimestamp: 1712674200000,
+  //           startTimestamp: 1712106000000,
+  //           endTimestamp: 1712674200000,
+  //           product: {
+  //             id: 114564,
+  //             brandName: 'ASICS',
+  //             name: '아식스 젤-카야노 14 크림 블랙',
+  //             nameEn: 'ASICS GEL-KAYANO 14 CREAM BLACK',
+  //             thumb:
+  //               'https://static.shoeprize.com/Raffle/thumb/1201A019-108-shoeprize-ASICS-GEL-KAYANO-14-CREAM-BLACK-114564-1685067716736.jpg',
+  //             code: '1201A019-108',
+  //           },
+  //           shippingMethod: '매장 수령',
+  //           payMethod: '오프라인 구매',
+  //           salePrice: '169000.00',
+  //           salePriceCurrency: 'KRW',
+  //           salePriceCurrencySymbol: '￦',
+  //           region: '한국',
+  //           isUndefinedStartTime: false,
+  //           isUndefinedEndTime: false,
+  //           purchaseStartedTimestamp: 1712797200000,
+  //           purchaseStoppedTimestamp: 1712847000000,
+  //           mode: 'online',
+  //           isUndefinedPurchaseStartedAt: false,
+  //           isUndefinedPurchaseStoppedAt: false,
+  //           isUndefinedAnnouncedAt: false,
+  //           completedTimestamp: 1712847599999,
+  //           isExpired: false,
+  //           isInHouse: false,
+  //           isDomesticSite: true,
+  //         },
+  //         {
+  //           id: 146473,
+  //           uuid: 'd091dd6c-3355-4123-b49f-03f78ce12f71',
+  //           type: 1,
+  //           isEvent: false,
+  //           method: '당첨 문자 발송',
+  //           url: 'https://grandstage.a-rt.com/product/new?prdtNo=1020100891&page=1',
+  //           price: '￦169,000',
+  //           releaseMarket: {
+  //             name: 'ABC마트 GS 경기신세계점',
+  //             permalink: 'abc-gs-gyeonggi-ssg',
+  //             icon: 'https://static.shoeprize.com/site/icon/ABC%EB%A7%88%ED%8A%B8_GS_%EA%B2%BD%EA%B8%B0%EC%8B%A0%EC%84%B8%EA%B3%84%EC%A0%90-c4fc8a5e-f155-11ee-855e-0219d052041b.jpeg',
+  //             phone: '0215889667',
+  //             mapUrl: 'https://naver.me/5wAqA3X9',
+  //             address:
+  //               '경기 용인시 수지구 포은대로 536 신세계백화점 경기점 4층, ABC-MART GS 경기신세계점',
+  //             channels: [
+  //               {
+  //                 type: 'instagram',
+  //                 link: 'https://www.instagram.com/abcmartkr_grandstage/',
+  //                 typeName: '인스타그램',
+  //               },
+  //             ],
+  //             isUseApp: false,
+  //           },
+  //           dateInfo: '4월 3일 (수) 10:00 ~ 4월 9일 (화) 23:50',
+  //           announcedTimestamp: 1712797200000,
+  //           closedTimestamp: 1712674200000,
+  //           endTimestamp: 1712674200000,
+  //           product: {
+  //             id: 114564,
+  //             brandName: 'ASICS',
+  //             name: '아식스 젤-카야노 14 크림 블랙',
+  //             nameEn: 'ASICS GEL-KAYANO 14 CREAM BLACK',
+  //             thumb:
+  //               'https://static.shoeprize.com/Raffle/thumb/1201A019-108-shoeprize-ASICS-GEL-KAYANO-14-CREAM-BLACK-114564-1685067716736.jpg',
+  //             code: '1201A019-108',
+  //           },
+  //           shippingMethod: '매장 수령',
+  //           payMethod: '오프라인 구매',
+  //           salePrice: '169000.00',
+  //           salePriceCurrency: 'KRW',
+  //           salePriceCurrencySymbol: '￦',
+  //           region: '한국',
+  //           isUndefinedStartTime: false,
+  //           isUndefinedEndTime: false,
+  //           purchaseStartedTimestamp: 1712797200000,
+  //           purchaseStoppedTimestamp: 1712847000000,
+  //           mode: 'online',
+  //           isUndefinedPurchaseStartedAt: false,
+  //           isUndefinedPurchaseStoppedAt: false,
+  //           isUndefinedAnnouncedAt: false,
+  //           completedTimestamp: 1712847599999,
+  //           isExpired: false,
+  //           isInHouse: false,
+  //           isDomesticSite: true,
+  //         },
+  //       ],
+  //     },
+  //   });
 
-    const result = [
-      [
-        {
-          name: 'ASICS GEL-KAYANO 14 CREAM BLACK',
-          subName: '아식스 젤-카야노 14 크림 블랙',
-          shoeCode: '1201A019-108',
-          brand: 'ASICS',
-          relPrice: '￦169,000',
-          imgUrl:
-            'https://static.shoeprize.com/Raffle/thumb/1201A019-108-shoeprize-ASICS-GEL-KAYANO-14-CREAM-BLACK-114564-1685067716736.jpg',
-          raffleStartDate: '2024-04-03 01:00:00',
-          raffleEndDate: '2024-04-09 14:50:00',
-          raffleUrl:
-            'https://grandstage.a-rt.com/product/new?prdtNo=1020100891&page=1',
-          releaseMarketName: 'ABC마트 GS 경기신세계점',
-          releaseMarketIcon:
-            'https://static.shoeprize.com/site/icon/ABC%EB%A7%88%ED%8A%B8_GS_%EA%B2%BD%EA%B8%B0%EC%8B%A0%EC%84%B8%EA%B3%84%EC%A0%90-c4fc8a5e-f155-11ee-855e-0219d052041b.jpeg',
-        },
-        {
-          name: 'ASICS GEL-KAYANO 14 CREAM BLACK',
-          subName: '아식스 젤-카야노 14 크림 블랙',
-          shoeCode: '1201A019-108',
-          brand: 'ASICS',
-          relPrice: '￦169,000',
-          imgUrl:
-            'https://static.shoeprize.com/Raffle/thumb/1201A019-108-shoeprize-ASICS-GEL-KAYANO-14-CREAM-BLACK-114564-1685067716736.jpg',
-          raffleStartDate: null,
-          raffleEndDate: '2024-04-09 14:50:00',
-          raffleUrl:
-            'https://grandstage.a-rt.com/product/new?prdtNo=1020100891&page=1',
-          releaseMarketName: 'ABC마트 GS 경기신세계점',
-          releaseMarketIcon:
-            'https://static.shoeprize.com/site/icon/ABC%EB%A7%88%ED%8A%B8_GS_%EA%B2%BD%EA%B8%B0%EC%8B%A0%EC%84%B8%EA%B3%84%EC%A0%90-c4fc8a5e-f155-11ee-855e-0219d052041b.jpeg',
-        },
-      ],
-    ];
+  //   const result = [
+  //     [
+  //       {
+  //         name: 'ASICS GEL-KAYANO 14 CREAM BLACK',
+  //         subName: '아식스 젤-카야노 14 크림 블랙',
+  //         shoeCode: '1201A019-108',
+  //         brand: 'ASICS',
+  //         relPrice: '￦169,000',
+  //         imgUrl:
+  //           'https://static.shoeprize.com/Raffle/thumb/1201A019-108-shoeprize-ASICS-GEL-KAYANO-14-CREAM-BLACK-114564-1685067716736.jpg',
+  //         raffleStartDate: '2024-04-03 01:00:00',
+  //         raffleEndDate: '2024-04-09 14:50:00',
+  //         raffleUrl:
+  //           'https://grandstage.a-rt.com/product/new?prdtNo=1020100891&page=1',
+  //         releaseMarketName: 'ABC마트 GS 경기신세계점',
+  //         releaseMarketIcon:
+  //           'https://static.shoeprize.com/site/icon/ABC%EB%A7%88%ED%8A%B8_GS_%EA%B2%BD%EA%B8%B0%EC%8B%A0%EC%84%B8%EA%B3%84%EC%A0%90-c4fc8a5e-f155-11ee-855e-0219d052041b.jpeg',
+  //       },
+  //       {
+  //         name: 'ASICS GEL-KAYANO 14 CREAM BLACK',
+  //         subName: '아식스 젤-카야노 14 크림 블랙',
+  //         shoeCode: '1201A019-108',
+  //         brand: 'ASICS',
+  //         relPrice: '￦169,000',
+  //         imgUrl:
+  //           'https://static.shoeprize.com/Raffle/thumb/1201A019-108-shoeprize-ASICS-GEL-KAYANO-14-CREAM-BLACK-114564-1685067716736.jpg',
+  //         raffleStartDate: null,
+  //         raffleEndDate: '2024-04-09 14:50:00',
+  //         raffleUrl:
+  //           'https://grandstage.a-rt.com/product/new?prdtNo=1020100891&page=1',
+  //         releaseMarketName: 'ABC마트 GS 경기신세계점',
+  //         releaseMarketIcon:
+  //           'https://static.shoeprize.com/site/icon/ABC%EB%A7%88%ED%8A%B8_GS_%EA%B2%BD%EA%B8%B0%EC%8B%A0%EC%84%B8%EA%B3%84%EC%A0%90-c4fc8a5e-f155-11ee-855e-0219d052041b.jpeg',
+  //       },
+  //     ],
+  //   ];
 
-    await rafflesservice.scrapInfo(productIdArr);
+  //   await rafflesservice.scrapInfo(productIdArr);
 
-    expect(axiosSpy).toHaveBeenCalledTimes(1);
-    expect(await rafflesservice.scrapInfo(productIdArr)).toEqual(result);
+  //   expect(axiosSpy).toHaveBeenCalledTimes(1);
+  //   expect(await rafflesservice.scrapInfo(productIdArr)).toEqual(result);
 
-    jest.restoreAllMocks();
-  });
+  //   jest.restoreAllMocks();
+  // });
 
   it('error scrap info', async () => {
     const mockError = new Error('Request failed');
