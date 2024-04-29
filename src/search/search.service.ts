@@ -17,8 +17,8 @@ export class SearchService {
                 multi_match: {
                   query: query,
                   fields: ['subName^6', 'name^2', 'title'],
-                  fuzziness: 'AUTO',
-                  operator: 'AND',
+                  fuzziness: '1',
+                  operator: 'OR',
                 },
               },
               functions: [

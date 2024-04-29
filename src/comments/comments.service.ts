@@ -38,6 +38,21 @@ export class CommentService {
     });
     return this.commentRepository.save(newComment);
   }
+
+  // 댓글 조회
+  async getCommnet(marketId: number) {
+    const market = await this.marketRepository.findOne({
+      where: {
+        id: marketId,
+      },
+      relations: ['comment'],
+    });
+    if (!market) {
+      throw new Error('판매글이 없습니다');
+    }
+    return market.comment;
+  }
+
   //댓글수정aaa
   async updateComment(
     commentId: number,
