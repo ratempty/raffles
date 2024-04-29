@@ -243,9 +243,16 @@ export class RafflesService {
           const need2 = !(
             raffle.product.name &&
             (raffle.product.name.includes('후디') ||
+              raffle.product.name.includes('후드') ||
+              raffle.product.name.includes('양말') ||
               raffle.product.name.includes('자켓') ||
               raffle.product.name.includes('쇼츠') ||
               raffle.product.name.includes('셔츠') ||
+              raffle.product.name.includes('레깅스') ||
+              raffle.product.name.includes('팝업') ||
+              raffle.product.name.includes('레고') ||
+              raffle.product.name.includes('LEGO') ||
+              raffle.product.name.includes('공연') ||
               raffle.product.name.includes('캡') ||
               raffle.product.name.includes('티셔츠') ||
               raffle.product.name.includes('삭스') ||
@@ -297,7 +304,12 @@ export class RafflesService {
 
     for (let i = 0; i < productInfos.length; i++) {
       for (let infos of productInfos[i]) {
-        await this.raffleRepository.save(infos);
+        const existingRaffle = await this.raffleRepository.findOne({
+          where: { raffleUrl: infos.raffleUrl },
+        });
+        if (!existingRaffle) {
+          await this.raffleRepository.save(infos);
+        }
       }
     }
     return productInfos;

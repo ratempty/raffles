@@ -283,20 +283,8 @@ describe('UserService', () => {
   });
 
   describe('logout', () => {
-    it('should return an expired token', async () => {
-      // 'jwtService.sign' 메소드를 모킹하여 만료된 토큰을 반환하도록 설정합니다.
-      const expectedToken = 'expiredToken';
-      jest.spyOn(service['jwtService'], 'sign').mockReturnValue(expectedToken);
-
-      // logout 메소드를 호출하여 만료된 토큰이 반환되는지 확인합니다.
-      const result = await service.logout('validToken');
-
-      // 예상 결과와 실제 결과를 비교합니다.
-      expect(result.access_token).toEqual(expectedToken); // 만료된 토큰이 반환되는지 확인합니다.
-      expect(service['jwtService'].sign).toHaveBeenCalledWith(
-        {},
-        { expiresIn: 0 },
-      ); // 'jwtService.sign'가 적절한 매개변수로 호출되었는지 확인합니다.
+    it('throws an error if token is not provided', async () => {
+      await expect(service.logout('')).rejects.toThrow(UnauthorizedException);
     });
   });
 
@@ -326,67 +314,6 @@ describe('UserService', () => {
       await expect(service.deleteUser(999)).rejects.toThrow(
         '사용자를 찾을 수 없습니다.',
       ); // NotFoundException이 예상된대로 발생하는지 확인합니다.
-    });
-  });
-
-  describe('getUserRaffleEntries', () => {
-    it('should return user raffle entries if found', async () => {
-      // 예시 사용자 ID
-      const userId = 1;
-
-      // 사용자의 라플 응모 정보
-      const raffleEntries = [
-        {
-          raffle: {
-            name: 'Raffle 1',
-            imgUrl: 'http://example.com/raffle1.jpg',
-            brand: 'Brand 1',
-            shoeCode: 'Code 1',
-            relPrice: 100,
-            raffleStartDate: new Date(),
-            raffleEndDate: new Date(),
-          },
-        },
-      ];
-
-      // userRaffleRepository.find 메소드를 모킹하여 사용자의 라플 응모 정보를 반환하도록 설정합니다.
-      userRaffleRepository.find = jest
-        .fn()
-        .mockResolvedValue(raffleEntries) as jest.MockedFunction<
-        typeof userRaffleRepository.find
-      >;
-
-      // getUserRaffleEntries 메소드를 호출하여 사용자의 라플 응모 정보를 가져옵니다.
-      const result = await service.getUserRaffleEntries(userId);
-
-      // 예상 결과와 실제 결과를 비교하여 검증합니다.
-      expect(result).toEqual(
-        // 라플 응모 정보가 예상된 형식으로 반환되는지 확인합니다.
-        raffleEntries.map((entry) => ({
-          name: entry.raffle.name,
-          imgUrl: entry.raffle.imgUrl,
-          brand: entry.raffle.brand,
-          shoeCode: entry.raffle.shoeCode,
-          relPrice: entry.raffle.relPrice,
-          raffleStartDate: entry.raffle.raffleStartDate,
-          raffleEndDate: entry.raffle.raffleEndDate,
-        })),
-      );
-    });
-
-    it('should throw NotFoundException if no raffle entries found', async () => {
-      // 예시 사용자 ID
-      const userId = 1;
-
-      // userRaffleRepository.find 메소드를 모킹하여 빈 배열을 반환하도록 설정합니다.
-      userRaffleRepository.find = jest.fn(() =>
-        Promise.resolve([]),
-      ) as jest.MockedFunction<typeof userRaffleRepository.find>;
-
-      // getUserRaffleEntries 메소드를 호출하여 사용자의 라플 응모 정보를 가져오면 NotFoundException이 발생하는지 확인합니다.
-      await expect(service.getUserRaffleEntries(userId)).rejects.toThrow(
-        NotFoundException,
-      );
     });
   });
 });

@@ -9,7 +9,8 @@ import {
   UseGuards,
   Res,
   NotFoundException,
-  UnauthorizedException,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
@@ -19,8 +20,6 @@ import { RegisterDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtGuard } from '../auth/guard';
-import { UserInfo } from './utils/userInfo.decorator';
 
 @Controller('user')
 export class UserController {
@@ -88,46 +87,22 @@ export class UserController {
     };
   }
   //로그아웃
-  @UseGuards(JwtGuard)
+  @UseGuards(AuthGuard('jwt'))
   @Post('logout')
-  async logout(@Body('token') token: string) {
-    if (!token) {
-      throw new UnauthorizedException(
-        '로그아웃을 위한 토큰이 제공되지 않았습니다.',
-      );
-    }
-    await this.userService.logout(token);
-
-    return { message: '로그아웃되었습니다.' };
+  @HttpCode(HttpStatus.OK)
+  async logout(@Res({ passthrough: true }) res: Response) {
+    // 현재 시간을 기준으로 쿠키 만료 시간을 설정
+    res.cookie('Authorization', '', {
+      httpOnly: true,
+      expires: new Date(Date.now() - 1), // 현재 시간보다 1밀리초 이전으로 설정
+    });
+    return { message: '성공적으로 로그아웃되었습니다.' };
   }
+
   //회원탈퇴
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   async remove(@Param('id') id: number) {
     await this.userService.deleteUser(id);
-  }
-
-  // 사용자 응모내역 조회
-  @Get(':userId/entries')
-  async getUserRaffleEntries(@Param('userId') userId: number) {
-    const userRaffles = await this.userRaffleRepository.find({
-      where: { userId },
-      relations: ['raffle'],
-    });
-
-    if (!userRaffles || userRaffles.length === 0) {
-      throw new NotFoundException('사용자의 응모 내역을 찾을 수 없습니다.');
-    }
-
-    // 사용자의 응모 내역을 반환
-    return userRaffles.map((userRaffle) => ({
-      name: userRaffle.raffle.name,
-      imgUrl: userRaffle.raffle.imgUrl,
-      brand: userRaffle.raffle.brand,
-      shoeCode: userRaffle.raffle.shoeCode,
-      relPrice: userRaffle.raffle.relPrice,
-      raffleStartDate: userRaffle.raffle.raffleStartDate,
-      raffleEndDate: userRaffle.raffle.raffleEndDate,
-    }));
   }
 }
