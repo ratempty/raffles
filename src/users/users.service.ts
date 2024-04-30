@@ -14,18 +14,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserRaffle } from '../raffles/entities/userRaffle.entity';
-import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    @InjectRepository(UserRaffle)
-    private userRaffleRepository: Repository<UserRaffle>,
     private readonly jwtService: JwtService,
-    private readonly emailService: EmailService,
   ) {}
 
   // 회원가입 메소드
@@ -55,22 +50,12 @@ export class UserService {
     const hashedPassword = await hash(password, 10);
 
     // 사용자 정보 저장
-    const newUser = await this.userRepository.save({
+    await this.userRepository.save({
       email,
       password: hashedPassword,
-      nickName,
+      nickName: nickName,
       name,
     });
-
-    // 회원가입 후 이메일 인증 코드 발송
-    await this.emailService.sendVerificationEmail(email);
-
-    // 회원가입 성공 메시지 반환
-    return {
-      message:
-        '회원가입이 성공적으로 완료되었습니다. 이메일로 전송된 인증 코드를 확인하세요.',
-      user: newUser,
-    };
   }
 
   // 로그인 메소드
@@ -146,15 +131,24 @@ export class UserService {
 
     return await this.userRepository.findOneBy({ id });
   }
-
-  // 로그아웃 메소드
+  //로그아웃
   async logout(token: string) {
-    // 토큰의 만료 시간을 조정하여 로그아웃을 구현
-    // 토큰의 만료 시간을 현재 시간으로 설정하여 무효화
-    const expiredToken = this.jwtService.sign({}, { expiresIn: 0 });
-    // 클라이언트에게 새로운 만료된 토큰을 전달하여 로그아웃을 유도
-    // 클라이언트는 이 새로운 토큰을 사용하여 인증 요청을 할 경우 로그아웃
-    return { access_token: expiredToken };
+    if (!token) {
+      throw new UnauthorizedException('로그아웃을 위한 토큰이 필요합니다.');
+    }
+
+    // 토큰 디코드하여 유효성 및 만료 시간 확인
+    const decoded = this.jwtService.decode(token);
+    if (!decoded || typeof decoded === 'string') {
+      throw new UnauthorizedException('유효하지 않은 토큰입니다.');
+    }
+
+    const userId = decoded.sub;
+
+    const user = await this.userRepository.findOneBy({ id: userId });
+    if (!user) {
+      throw new NotFoundException('유저를 찾을 수 없습니다.');
+    }
   }
 
   // 회원 삭제 메소드
@@ -164,28 +158,5 @@ export class UserService {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
     await this.userRepository.delete({ id });
-  }
-
-  // 사용자의 응모 내역 조회
-  async getUserRaffleEntries(userId: number) {
-    const userRaffles = await this.userRaffleRepository.find({
-      where: { userId },
-      relations: ['raffle'], // 응모 정보를 함께 로드하기 위해 관계 추가
-    });
-
-    if (!userRaffles || userRaffles.length === 0) {
-      throw new NotFoundException('사용자의 응모 내역을 찾을 수 없습니다.');
-    }
-
-    // 사용자의 응모 내역을 반환
-    return userRaffles.map((userRaffle) => ({
-      name: userRaffle.raffle.name,
-      imgUrl: userRaffle.raffle.imgUrl,
-      brand: userRaffle.raffle.brand,
-      shoeCode: userRaffle.raffle.shoeCode,
-      relPrice: userRaffle.raffle.relPrice,
-      raffleStartDate: userRaffle.raffle.raffleStartDate,
-      raffleEndDate: userRaffle.raffle.raffleEndDate,
-    }));
   }
 }

@@ -14,7 +14,6 @@ import { OAuthService } from './oauth.service';
 @Controller('kakao')
 export class OAuthController {
   constructor(private readonly oauthService: OAuthService) {}
-
   @Get('/oauth')
   @Header('Content-Type', 'text/html')
   redirectToKakaoAuth(@Res() res) {
@@ -43,5 +42,6 @@ export class OAuthController {
       sameSite: 'none',
     });
     response.redirect('https://www.didyouraffles.site/');
+
   }
 }
