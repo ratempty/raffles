@@ -8,7 +8,6 @@ import {
   Query,
   Res,
 } from '@nestjs/common';
-import { Response } from 'express';
 import { OAuthService } from './oauth.service';
 
 @Controller('kakao')
@@ -32,17 +31,6 @@ export class OAuthController {
       KAKAO_REDIRECT_URI,
       query.code,
     );
-<<<<<<< HEAD
     return { message: '카카오 로그인 되었습니다', kakaoReturn };
-=======
-    // return { message: '카카오 로그인 되었습니다', kakaoReturn };
-    response.cookie('access_token', kakaoReturn.access_token, {
-      path: '/',
-      secure: true,
-      sameSite: 'none',
-    });
-    response.redirect('https://www.didyouraffles.site/');
-
->>>>>>> 48da8c83feb9133c47c780c750741576ecdb50b3
   }
 }
