@@ -8,6 +8,7 @@ import {
   Query,
   Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { OAuthService } from './oauth.service';
 
 @Controller('kakao')
@@ -24,14 +25,23 @@ export class OAuthController {
   }
   // 사용자 정보 불러오는 로직
   @Get('/oauth/kakao-auth')
-  async getKakaoInfo(@Query() query: { code }) {
+  async getKakaoInfo(
+    @Query() query: { code },
+    @Res({ passthrough: true }) response: Response,
+  ) {
     const KAKAO_REST_API_KEY = process.env.KAKAO_REST_API_KEY;
     const KAKAO_REDIRECT_URI = process.env.KAKAO_REDIRECT_URI;
-    await this.oauthService.kakaoLogin(
+    const kakaoReturn = await this.oauthService.kakaoLogin(
       KAKAO_REST_API_KEY,
       KAKAO_REDIRECT_URI,
       query.code,
     );
-    return { message: '카카오 로그인 되었습니다' };
+    // return { message: '카카오 로그인 되었습니다', kakaoReturn };
+    response.cookie('access_token', kakaoReturn.access_token, {
+      path: '/',
+      secure: true,
+      sameSite: 'none',
+    });
+    response.redirect('https://www.didyouraffles.site/');
   }
 }
