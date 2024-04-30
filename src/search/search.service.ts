@@ -14,11 +14,25 @@ export class SearchService {
           query: {
             function_score: {
               query: {
-                multi_match: {
-                  query: query,
-                  fields: ['subName^6', 'name^2', 'title'],
-                  fuzziness: 'AUTO',
-                  operator: 'AND',
+                bool: {
+                  should: [
+                    {
+                      multi_match: {
+                        query: query,
+                        fields: ['subName^6', 'name^2', 'title'],
+                        fuzziness: '1',
+                        operator: 'OR',
+                      },
+                    },
+                    {
+                      multi_match: {
+                        query: query,
+                        fields: ['shoeCode^2'],
+                        fuzziness: '1',
+                        operator: 'OR',
+                      },
+                    },
+                  ],
                 },
               },
               functions: [
@@ -35,7 +49,7 @@ export class SearchService {
       return body.hits.hits.map((hit) => hit._source);
     } catch (error) {
       console.error('ES Error:', error);
-      throw error; // 에러 처리를 원하는 방식으로 수정하세요
+      throw error;
     }
   }
 

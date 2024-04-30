@@ -7,6 +7,7 @@ import {
   Request,
   Patch,
   Delete,
+  Get,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommentService } from './comments.service';
@@ -14,6 +15,12 @@ import { CommentService } from './comments.service';
 @Controller('comments')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
+
+  @Get('markets/:marketId')
+  async getCommentsByMarketId(@Param('marketId') marketId: string) {
+    const parsedMarketId = parseInt(marketId, 10);
+    return this.commentService.getCommnet(parsedMarketId);
+  }
 
   @UseGuards(AuthGuard('jwt'))
   @Post('markets/:marketId')

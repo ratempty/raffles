@@ -8,8 +8,6 @@ import { User } from './entities/user.entity';
 import { UserController } from './users.controller';
 import { UserService } from './users.service';
 import { Calendar } from 'src/calendars/entities/calendar.entity';
-import { UserRaffle } from 'src/raffles/entities/userRaffle.entity';
-import { EmailService } from 'src/email/email.service';
 
 @Module({
   imports: [
@@ -19,9 +17,9 @@ import { EmailService } from 'src/email/email.service';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User, Calendar, UserRaffle]),
+    TypeOrmModule.forFeature([User, Calendar]),
   ],
-  providers: [UserService, EmailService],
+  providers: [UserService],
   controllers: [UserController],
   exports: [UserService],
 })

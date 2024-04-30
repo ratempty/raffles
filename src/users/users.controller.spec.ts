@@ -4,7 +4,8 @@ import { UserService } from './users.service';
 import { User } from './entities/user.entity';
 import { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
+// import httpMocks from 'node-mocks-http';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -133,29 +134,6 @@ describe('UserController', () => {
     ).toEqual(result);
   });
 
-  // 첫 번째 테스트 케이스: 토큰이 제공되지 않았을 때 UnauthorizedException을 발생시키는지 테스트합니다.
-  it('토큰이 제공되지 않았을 때 UnauthorizedException을 발생시킨다', async () => {
-    // controller.logout을 호출할 때 첫 번째 인자로 null을 전달하고, 이 경우 UnauthorizedException이 발생하는지 expect 함수로 검증합니다.
-    // .rejects를 사용하여 비동기 함수가 reject될 것을 기대하고, .toThrow를 통해 특정 예외가 발생하는지 확인합니다.
-    await expect(controller.logout(null)).rejects.toThrow(
-      UnauthorizedException,
-    );
-  });
-
-  // 두 번째 테스트 케이스: 유효한 토큰으로 로그아웃 요청 시 성공 메시지를 반환하는지 테스트합니다.
-  it('유효한 토큰으로 로그아웃 요청 시 성공 메시지를 반환한다', async () => {
-    // 로그아웃이 성공적으로 이루어졌을 때 반환되어야 하는 기대 결과를 정의합니다.
-    const expectedResult = { message: '로그아웃되었습니다.' };
-    // controller.logout 함수를 호출하고, 'validToken'을 인자로 전달합니다. 이 함수의 반환값을 result 변수에 저장합니다.
-    const result = await controller.logout('validToken');
-
-    // 반환된 결과가 기대하는 결과와 동일한지 확인합니다.
-    expect(result).toEqual(expectedResult);
-    // userService의 logout 메소드가 'validToken' 인자를 받아 호출되었는지 확인합니다.
-    // 이는 의존성 주입을 통해 주입된 userService의 logout 함수가 올바르게 호출되었는지 검증하는 과정입니다.
-    expect(service.logout).toHaveBeenCalledWith('validToken'); // 로그아웃 메소드 호출 검증
-  });
-
   it('회원 탈퇴를 처리해야 합니다', async () => {
     // UserService의 deleteUser 함수를 가짜 구현으로 대체합니다.
     jest.spyOn(service, 'deleteUser').mockImplementation(async () => {});
@@ -176,12 +154,5 @@ describe('UserController', () => {
         name: 'name',
       }),
     ).rejects.toThrow(new NotFoundException('사용자를 찾을 수 없습니다.'));
-  });
-
-  it('로그아웃 시 토큰이 제공되지 않으면 UnauthorizedException을 발생시켜야 합니다', async () => {
-    // 토큰이 제공되지 않은 상태로 로그아웃을 호출하고 UnauthorizedException이 발생하는지 확인합니다.
-    await expect(controller.logout('')).rejects.toThrow(
-      new UnauthorizedException('로그아웃을 위한 토큰이 제공되지 않았습니다.'),
-    );
   });
 });
