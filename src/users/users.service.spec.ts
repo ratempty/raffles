@@ -7,13 +7,11 @@ import { User } from './entities/user.entity';
 import { UserRaffle } from '../raffles/entities/userRaffle.entity';
 import { HttpModule } from '@nestjs/axios';
 import {
-  NotFoundException,
   UnauthorizedException,
   ConflictException,
   BadRequestException,
 } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
-import { EmailService } from '../email/email.service'; // EmailService를 임포트합니다.
+import * as bcrypt from 'bcrypt'; // EmailService를 임포트합니다.
 
 jest.mock('bcrypt', () => ({
   ...jest.requireActual('bcrypt'),
@@ -43,12 +41,6 @@ describe('UserService', () => {
         {
           provide: getRepositoryToken(UserRaffle),
           useClass: Repository,
-        },
-        {
-          provide: EmailService, // EmailService 제공자를 설정합니다.
-          useValue: {
-            sendVerificationEmail: jest.fn(), // sendVerificationEmail 메소드를 모킹합니다.
-          },
         },
       ],
     }).compile();

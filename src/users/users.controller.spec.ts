@@ -4,7 +4,7 @@ import { UserService } from './users.service';
 import { User } from './entities/user.entity';
 import { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 // import httpMocks from 'node-mocks-http';
 
 describe('UserController', () => {
@@ -133,27 +133,6 @@ describe('UserController', () => {
       }),
     ).toEqual(result);
   });
-
-  // // 첫 번째 테스트 케이스: 토큰이 제공되지 않았을 때 UnauthorizedException을 발생시키는지 테스트합니다.
-  // it('토큰이 제공되지 않았을 때 UnauthorizedException을 발생시킨다', async () => {
-  //   // controller.logout을 호출할 때 첫 번째 인자로 null을 전달하고, 이 경우 UnauthorizedException이 발생하는지 expect 함수로 검증합니다.
-  //   // .rejects를 사용하여 비동기 함수가 reject될 것을 기대하고, .toThrow를 통해 특정 예외가 발생하는지 확인합니다.
-  //   await expect(controller.logout(null)).rejects.toThrow(
-  //     UnauthorizedException,
-  //   );
-  // });
-
-  // // 로그아웃 요청 시 성공 메시지를 반환하는지 테스트합니다.
-  // it('로그아웃 요청 시 성공 메시지를 반환한다', async () => {
-  //   const res = httpMocks.createResponse(); // httpMocks는 node-mocks-http 패키지에서 제공합니다.
-  //   const result = await controller.logout(res);
-
-  //   expect(result).toEqual({ message: '성공적으로 로그아웃되었습니다.' });
-  //   // 쿠키가 제거되었는지 확인
-  //   const cookies = res.getHeaders()['set-cookie'];
-  //   expect(cookies).toBeDefined();
-  //   expect(cookies[0]).toContain('Authorization=;');
-  // });
 
   it('회원 탈퇴를 처리해야 합니다', async () => {
     // UserService의 deleteUser 함수를 가짜 구현으로 대체합니다.
