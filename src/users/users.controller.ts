@@ -23,11 +23,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
-  userRaffleRepository: any;
-  constructor(
-    private readonly userService: UserService,
-    // private readonly userRaffleRepository: UserRaffleRepository,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   //회원가입
   @Post('register')
@@ -56,8 +52,8 @@ export class UserController {
     });
     return accessToken;
   }
-  // 회원 정보 상세 조회
 
+  // 회원 정보 상세 조회
   @UseGuards(AuthGuard('jwt'))
   @Get('profile/:id')
   async findByEmail(@Param('id') id: string): Promise<User> {
@@ -86,6 +82,7 @@ export class UserController {
       updatedUser: updatedUser,
     };
   }
+
   //로그아웃
   @UseGuards(AuthGuard('jwt'))
   @Post('logout')

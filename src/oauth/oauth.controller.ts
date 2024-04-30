@@ -13,7 +13,6 @@ import { OAuthService } from './oauth.service';
 @Controller('kakao')
 export class OAuthController {
   constructor(private readonly oauthService: OAuthService) {}
-
   @Get('/oauth')
   @Header('Content-Type', 'text/html')
   redirectToKakaoAuth(@Res() res) {
@@ -27,11 +26,11 @@ export class OAuthController {
   async getKakaoInfo(@Query() query: { code }) {
     const KAKAO_REST_API_KEY = process.env.KAKAO_REST_API_KEY;
     const KAKAO_REDIRECT_URI = process.env.KAKAO_REDIRECT_URI;
-    await this.oauthService.kakaoLogin(
+    const kakaoReturn = await this.oauthService.kakaoLogin(
       KAKAO_REST_API_KEY,
       KAKAO_REDIRECT_URI,
       query.code,
     );
-    return { message: '카카오 로그인 되었습니다' };
+    return { message: '카카오 로그인 되었습니다', kakaoReturn };
   }
 }
